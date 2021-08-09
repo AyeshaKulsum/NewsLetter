@@ -19,7 +19,6 @@ const Login = () => {
     }
     const user = isAutheticated()
     const loginForm = () => {
-
         <div className="container">
             <div className="text-center">Login Form</div>
             <form>
@@ -32,13 +31,11 @@ const Login = () => {
                 </div>
                 <button type="submit" onSubmit={onSubmit} className="btn btn-outline-success mb-3">Login</button>
             </form>
-
         </div>
     }
     return (
         <Base title="Login" description="Please enter details to login">
             <div className="row">
-                {{ user }}
                 {loginForm()}
             </div>
 
