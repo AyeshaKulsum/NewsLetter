@@ -16,18 +16,19 @@ const Subscribe = () => {
         }).catch(err => { console.log(err); })
     }
     const subscribeForm = () => {
-        <div className="container">
-            <form>
-                <div className="form-group">
-                    <input type="text" onChange={handleChange("url")} className="form-control" placeholder="URL here" value={url} name="url" />
-                </div>
-                <button onClick={onSubmit}>Subscribe</button>
-            </form>
-        </div>
+        return (
+            <div className="container">
+                <form>
+                    <div className="form-group">
+                        <input type="text" onChange={handleChange("url")} className="form-control" placeholder="URL here" value={url} name="url" />
+                    </div>
+                    <button onClick={onSubmit}>Subscribe</button>
+                </form>
+            </div>)
     }
     return (
         <Base title="Subscribe Form">
-            <div className="row">{subscribeForm()}</div>
+            <div >{subscribeForm()}</div>
         </Base>
     )
 }
