@@ -1,0 +1,25 @@
+{
+  "name": "rss-news-letter",
+  "version": "1.0.0",
+  "description": "Gather all News in one page",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "Ayesha Kulsum S J",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "hapi": "^16.1.0",
+    "hapi-auth-cookie": "^7.0.0",
+    "joi": "^10.2.2",
+    "nodemon": "^2.0.12",
+    "pg": "^8.7.1",
+    "rss-parser": "^3.12.0",
+    "sequelize": "^6.6.5",
+    "uuidv4": "^6.2.11",
+    "vision": "^4.1.1"
+  }
+}
