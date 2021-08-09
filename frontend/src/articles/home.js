@@ -22,11 +22,13 @@ const Home = () => {
                             // window.location.href = article.article_link 
                             window.open(article.article_link, '_blank').focus();
 
-                        }} className="card col-md-auto  offset-md-1 my-2 border border-success">
-
+                        }} className="card my-2 ml-1 mx-1 border border-success">
+                            {/* col-md-3  offset-md-1 my-2  */}
                             <div className="card-body">
                                 <h3 className="card-title">{article.article_title}</h3>
-                                <div style={{ position: "relative" }}> <span>{article.Author}</span >
+                                <span >{article.ContentSnippet}</span>
+
+                                <div style={{ position: "relative" }}> <span>{article.Title}</span >
                                     <span style={{ position: "absolute", right: "10px", top: "0px" }}>{article.PubDate}</span></div>
 
                             </div>

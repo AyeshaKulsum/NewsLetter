@@ -35,6 +35,7 @@ const Login = () => {
     return (
         <Base title="Login" description="Please enter details to login">
             <div className="row">
+                {user}
                 {loginForm()}
             </div>
 

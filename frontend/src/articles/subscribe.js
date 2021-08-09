@@ -17,12 +17,16 @@ const Subscribe = () => {
     }
     const subscribeForm = () => {
         return (
-            <div className="container">
+            <div className="container align-center">
                 <form>
-                    <div className="form-group">
-                        <input type="text" onChange={handleChange("url")} className="form-control" placeholder="URL here" value={url} name="url" />
+                    <div className="form-group row">
+                        <input type="text" onChange={handleChange("url")} className=" form-control my-2 col-8" placeholder="URL here" value={url} name="url" />
+                        <button onClick={onSubmit} className="btn btn-success offset-sm-5 align-center col-2">Subscribe</button>
                     </div>
-                    <button onClick={onSubmit}>Subscribe</button>
+
+
+
+
                 </form>
             </div>)
     }

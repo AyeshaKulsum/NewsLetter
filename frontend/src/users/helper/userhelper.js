@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 export const signup = (user) => {
     return fetch(`/signup`, {
         method: 'POST',
@@ -21,12 +22,9 @@ export const login = (user) => {
 }
 
 export const profile = () => {
+    console.log('here');
     return fetch(`/profile`, {
         method: 'GET'
-    }).then(response => {
-        console.log(response);
-    }).catch(err => {
-        console.log(err);
     })
 }
 
@@ -48,11 +46,12 @@ function getCookie(name) {
 }
 
 export const isAutheticated = () => {
+    console.log('auth', Cookies);
     if (typeof window == "undefined") {
         return false;
     }
-    if (getCookie('side')) {
-        return JSON.parse(getCookie('side'));
+    if (getCookie('sid')) {
+        return JSON.parse(getCookie('sid'));
     } else {
         return false;
     }

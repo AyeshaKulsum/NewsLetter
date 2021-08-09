@@ -121,7 +121,7 @@ const profileHelper = async (request) => {
     try {
         console.log('here');
         const { user_id } = request.auth.credentials
-        let result = await User.sequelize.query("select usm.source_id,s.\"FeedUrl\",s.\"Link\",s.\"Title\",a.\"Title\" as article_title,a.\"Link\" as article_link,a.\"Author\",a.\"Content\",a.\"ContentSnippet\",a.\"PubDate\",s.\"LastBuildDate\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id inner join \"Articles\" a on a.source_id=s.id where u.id=1 and usm.\"deletedAt\" is null and s.\"deletedAt\" is null and a.\"deletedAt\" is null order by a.\"PubDate\" desc", {
+        let result = await User.sequelize.query("select u.\"userName\",u.email,s.\"FeedUrl\",s.\"Link\",s.\"Title\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id where u.id=1 and usm.\"deletedAt\" is null and s.\"deletedAt\" is null", {
             type: QueryTypes.SELECT,
             replacements: { user_id }
         })
