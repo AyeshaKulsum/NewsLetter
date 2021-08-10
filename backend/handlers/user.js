@@ -7,7 +7,6 @@ const { uuid } = require('uuidv4');
 exports.signup = async (request, reply) => {
     try {
         let signup = await signupHelper(request);
-        console.log(signup)
         if (signup && signup.status === 'success') {
             sessionHelper(request, reply, signup.result.id, '/');
         } else {
@@ -40,7 +39,6 @@ const sessionHelper = async (request, reply, id, path) => {
 exports.login = async (request, reply) => {
     try {
         let login = await loginHelper(request);
-        console.log('login', login);
         if (login && login.status === 'success') {
             sessionHelper(request, reply, login.result.id, '/');
         } else {
@@ -60,7 +58,6 @@ exports.login = async (request, reply) => {
 exports.subscribe = async (request, reply) => {
     try {
         let subscribe = await subscribeHelper(request);
-        console.log(subscribe);
         if (subscribe) {
             reply(subscribe)
         } else {

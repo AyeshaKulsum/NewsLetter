@@ -44,7 +44,6 @@ export const fetchArticlesFromServer = () => {
     return dispatch => {
         fetchAllArticlesOfUser().then(async articles => {
             let a = await articles.json();
-            console.log('aaa', a);
             if (a.status === 'error') {
                 dispatch(errorFlag(true));
                 dispatch(fetchErrorMessage(a.message));
@@ -56,7 +55,6 @@ export const fetchArticlesFromServer = () => {
 
             }
         }).catch(err => {
-            console.log('articleerror', err);
             dispatch(fetchErrorMessage(err.message));
         }
         )
@@ -68,7 +66,6 @@ export const profileFromServer = () => {
     return dispatch => {
         profile().then(async response => {
             let result = await response.json();
-            console.log('aaa', result);
             if (result.status === 'error') {
                 dispatch(fetchErrorMessage(result.message));
             }
@@ -79,7 +76,6 @@ export const profileFromServer = () => {
 
             }
         }).catch(err => {
-            console.log('profilerr', err);
             dispatch(fetchErrorMessage(err.message));
         }
         )
@@ -103,7 +99,6 @@ export const fetchSourcesToSubscribeFromServer = () => {
     return dispatch => {
         fetchSourcesToSubscribe().then(async sources => {
             let s = await sources.json();
-            console.log('aaa', s);
             if (s.status === 'error') {
                 dispatch(fetchErrorMessage(s.message));
             }
@@ -114,7 +109,6 @@ export const fetchSourcesToSubscribeFromServer = () => {
 
             }
         }).catch(err => {
-            console.log('articleerror', err);
             dispatch(fetchErrorMessage(err.message));
         }
         )

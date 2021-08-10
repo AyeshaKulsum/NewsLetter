@@ -6,9 +6,7 @@ const { QueryTypes } = require("sequelize");
 
 const logoutHelper = async (request) => {
     try {
-        console.log(request.auth.credentials);
         let { id } = request.auth.credentials;
-        console.log(id);
         Session.destroy({
             where: {
                 id
@@ -29,7 +27,6 @@ const logoutHelper = async (request) => {
 const signupHelper = async (request) => {
     try {
         const { userName, email, password } = request.payload
-        console.log(userName, email, password)
         let user = await User.create({ userName, email, password })
 
         if (user !== null) {
@@ -65,9 +62,6 @@ const loginHelper = async (request) => {
                 password
             }
         })
-
-        console.log(user);
-
         let result = {
             email: user.email,
             userName: user.userName,
@@ -80,7 +74,6 @@ const loginHelper = async (request) => {
             }
             return response;
         }
-        // console.log(request, 'request')
         return null;
     }
     catch (err) {
@@ -111,7 +104,6 @@ const fetchArticleseHelper = async (request) => {
         return response;
     }
     catch (err) {
-        console.log(err);
         return { message: 'No articles found', err, status: 'error' }
     }
 }

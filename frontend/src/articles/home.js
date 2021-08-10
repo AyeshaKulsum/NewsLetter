@@ -13,11 +13,6 @@ const Home = () => {
     const dispatch = useDispatch();
 
     const articles = useSelector(state => state.articles);
-    // console.log('articles', articles)
-    // const state = useSelector(state => state);
-    // console.log('state', state)
-    // const error = useSelector(state => state.user.error_flag);
-    // console.log('error', error)
     return (
         <Base title="Articles" >
             <div className="row">

@@ -14,7 +14,6 @@ exports.fetchAllArticles = async (request, reply) => {
 exports.sourcesToSubscribe = async (request, reply) => {
     try {
         let sources = await sourcesToSubscribeHelper(request);
-        console.log(sources);
         reply(sources)
     }
     catch (err) {

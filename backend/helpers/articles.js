@@ -15,7 +15,6 @@ let parser = new Parser();
 
 const fetchAllArticlesHelper = async (request) => {
     try {
-        console.log(request.payload);
         let articles = await parser.parseURL('http://blog.chromium.org/atom.xml');
         return articles;
     }

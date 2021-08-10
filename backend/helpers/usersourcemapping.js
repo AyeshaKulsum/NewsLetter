@@ -18,12 +18,9 @@ const subscribeHelper = async (request) => {
                     FeedUrl: feedUrl
                 }
             });
-
-            console.log("source", source)
             if (!source) {
                 let mapSourcePromise = new Promise(async (resolve, reject) => {
                     let articles = await parser.parseURL(feedUrl);
-                    console.log(articles.items.length)
                     source = await Source.create({ FeedUrl: feedUrl, Title: articles.title, LastBuildDate: articles.lastBuildDate, Link: articles.link })
                     articles.items.forEach((element, index) => {
                         Article.create({
@@ -79,18 +76,15 @@ const unsubscribeHelper = async (request) => {
                 user_id, source_id
             }
         })
-        console.log(subscribeExists);
         if (subscribeExists) {
             let unsubscribe = await UserSourceMapping.destroy({ where: { id: subscribeExists.id } })
             return { status: 'success', unsubscribe };
         }
         else {
-            console.log('err1');
             return { message: 'Unable to unsubscribe', status: 'error' }
         }
     }
     catch (err) {
-        console.log('err12', err);
         return { message: 'Unable to unsubscribe', err, status: 'error' }
     }
 
@@ -117,7 +111,6 @@ const sourcesToSubscribeHelper = async (request) => {
         return response;
     }
     catch (err) {
-        console.log(err);
         return { message: 'No sources found', err, status: 'error' }
     }
 }
@@ -126,21 +119,6 @@ const sourcesToSubscribeHelper = async (request) => {
 const profileHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
-        console.log('here', user_id);
-        // const user = models.User.findOne({
-        //     where: {
-        //         id: user_id
-        //     },
-        //     include: [
-        //         {
-        //             model: models.Account,
-        //             as: 'account',
-        //             required: true,
-        //             where: whereConditionForAccount,
-        //         },
-        //     ],
-        // })
-        // s
         let data = await User.sequelize.query("select u.\"userName\",s.id as source_id,u.email,s.\"FeedUrl\",s.\"Link\",s.\"Title\" from \"Users\" u left join \"UserSourceMappings\" usm on usm.user_id=u.id and usm.user_id=:user_id left join \"Sources\" s on s.id=usm.source_id and s.\"deletedAt\" is null where u.id=:user_id ", {
             type: QueryTypes.SELECT,
             replacements: { user_id }
@@ -154,7 +132,6 @@ const profileHelper = async (request) => {
             email: data[0].email,
             subscribedSources
         }
-        console.log(result);
         let response = {
             status: 'success',
             result
@@ -162,7 +139,6 @@ const profileHelper = async (request) => {
         return response;
     }
     catch (err) {
-        console.log(err);
         return { message: '', err, status: 'error' }
     }
 }

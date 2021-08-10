@@ -8,32 +8,17 @@ import { useDispatch, useSelector } from "react-redux"
 
 const Profile = () => {
 
-    // const [user, setUser] = useState([])
-    // const [userName, setUserName] = useState('')
-    // const [email, setEmail] = useState('')
     const { email, userName, subscribedSources } = useSelector(state => state.user);
-    console.log(userName, email);
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(profileFromServer())
-        // profile().then(async (user) => {
-        //     let tempUser = await user.json()
-        //     console.log('temppp', tempUser);
-        //     if (tempUser.status === 'success') {
-        //         setUser(tempUser.result.sources)
-        //         setUserName(tempUser.result.userName)
-        //         setEmail(tempUser.result.email)
-        //     }
-        //     console.log(user, 'user');
-        // }).catch((err) => { console.log(err); })
     }, [])
 
     const unsubscribebtn = (source_id) => {
-        console.log(source_id);
         unsubscribe(source_id).then(response => {
             dispatch(fetchArticlesFromServer())
             dispatch(profileFromServer())
-        }).catch(err => console.log(err))
+        }).catch(err => dispatch(fetchErrorMessage(err.message)))
     }
 
     return (

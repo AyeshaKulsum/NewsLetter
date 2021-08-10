@@ -27,7 +27,6 @@ const articlesRoute = [
                 }
             },
             handler: (request, reply) => {
-                console.log('request.auth.isAuthenticated', request.auth);
                 if (request.auth.isAuthenticated) {
                     reply.view('index');
                 } else {
@@ -70,6 +69,7 @@ const articlesRoute = [
             description: 'Gets all sources'
         }
     },
+
 
 ]
 

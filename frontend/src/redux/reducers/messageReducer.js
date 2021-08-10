@@ -7,8 +7,6 @@ const initialState = {
 
 const MessageReducer = (state = initialState, action) => {
 
-    console.log("Coming to MessageReducer ", action)
-
     const { type, payload } = action;
 
     switch (type) {

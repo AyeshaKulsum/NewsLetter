@@ -4,8 +4,6 @@ const initialState = []
 
 const ArticlesReducer = (state = initialState, action) => {
 
-    console.log("Coming to Articles Reducer", state)
-
     const { type, payload } = action;
 
     switch (type) {

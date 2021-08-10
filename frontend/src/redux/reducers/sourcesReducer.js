@@ -4,8 +4,6 @@ const initialState = []
 
 const SourcesReducer = (state = initialState, action) => {
 
-    console.log("Coming to Sources Reducer", state)
-
     const { type, payload } = action;
 
     switch (type) {

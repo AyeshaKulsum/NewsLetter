@@ -22,22 +22,6 @@ const Login = () => {
         login(values).then(async response => {
             dispatch(loginSuccess());
             history.push("/")
-
-            // console.log(response, 'response');
-            // let res = await response.json();
-            // console.log(res, 'ress');
-
-            // if (res.status === 'error') {
-            //     dispatch(fetchErrorMessage(res.message));
-            // }
-            // else {
-            //     dispatch(fetchErrorMessage(''));
-            //     dispatch(fetchSuccessMessage(''));
-            //     dispatch(fetchUserDetails(res.result))
-            //     history.push("/")
-
-            // }
-
         }).catch(err => {
 
             dispatch(fetchErrorMessage(err.message));

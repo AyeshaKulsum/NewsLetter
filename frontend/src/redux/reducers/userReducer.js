@@ -8,8 +8,6 @@ const initialState = {
 
 const UserReducer = (state = initialState, action) => {
 
-    console.log("Coming to UserReducer", action)
-
     const { type, payload } = action;
 
 
