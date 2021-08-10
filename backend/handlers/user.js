@@ -27,7 +27,7 @@ const sessionHelper = async (request, reply, id, path) => {
             user_id: id
         }
         request.cookieAuth.set(data);
-        reply.redirect(path);
+        reply.redirect(path).state('session', { loggedIn: true });
     })
 }
 
@@ -103,7 +103,7 @@ exports.logout = async (request, reply) => {
     try {
         let logout = await logoutHelper(request);
         if (logout) {
-            reply.redirect('/')
+            reply.redirect('/').unstate("session")
         }
 
     }

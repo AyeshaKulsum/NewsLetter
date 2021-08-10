@@ -17,7 +17,7 @@ const Article = db.define('Article', {
     }
     ,
     Content: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true
     }
     ,
@@ -25,11 +25,11 @@ const Article = db.define('Article', {
         type: Sequelize.TEXT,
         allowNull: false
     }
-    // ,
-    // Categories: {
-    //     type: Sequelize.STRING,
-    //     allowNull: false
-    // }
+    ,
+    Categories: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    }
     // ,
     // Guid: {
     //     type: Sequelize.STRING,

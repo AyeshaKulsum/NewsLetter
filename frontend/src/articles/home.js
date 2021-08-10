@@ -12,6 +12,7 @@ const Home = () => {
             console.log(articles);
         }).catch(err => console.log(err))
     }, [])
+    console.log(articles)
     return (
         <Base title="Articles" >
             <div className="row">

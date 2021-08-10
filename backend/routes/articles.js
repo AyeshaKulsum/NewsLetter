@@ -31,7 +31,7 @@ const articlesRoute = [
                 if (request.auth.isAuthenticated) {
                     reply.view('index');
                 } else {
-                    reply.view('login')
+                    reply.redirect('/login')
                 }
 
             },

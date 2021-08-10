@@ -83,6 +83,15 @@ const init = async () => {
         }
     })
 
+    server.state('session', {
+        ttl: 30 * 24 * 60 * 60 * 1000,     // 30 days
+        isSecure: false,
+        isHttpOnly: false,
+        isSameSite: 'Lax',
+        path: '/',
+        encoding: 'base64json'
+    });
+
     //ON REQUEST 
     server.ext('onRequest', function (request, reply) {
         console.log(`onRequest:${request.method.toUpperCase()}:${request.path}/${request.params}`)
@@ -97,7 +106,7 @@ const init = async () => {
             return reply.continue();
         } else {
             console.log(false)
-            return reply.view('login')
+            return reply.redirect('/login')
         }
     });
 

@@ -12,9 +12,8 @@ const Routes = () => {
                 <Route path="/login" exact component={Login} />
                 <Route path="/signup" exact component={SignUp} />
                 <Route path="/" exact component={Home} />
-                <Route path="/articles" exact component={Home} />
-                <Route path="/profile" exact component={Profile} />
-                <Route path="/subscribe" exact component={Subscribe} />
+                <Route path="/user-profile" exact component={Profile} />
+                <Route path="/user-subscribe" exact component={Subscribe} />
             </Switch>
         </BrowserRouter>
     )

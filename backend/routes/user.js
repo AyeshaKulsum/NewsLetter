@@ -1,4 +1,5 @@
 const { signup, login, logout, subscribe, unsubscribe, profile } = require('../handlers/user')
+const { signupValidation, loginValidation, subscribeValidation, unsubscribeValidation } = require('../validations/articles')
 
 
 
@@ -21,6 +22,7 @@ const userRoute = [
         path: '/signup',
         config: {
             handler: signup,
+            validate: signupValidation,
             description: 'Sign Up User'
         }
     },
@@ -30,9 +32,12 @@ const userRoute = [
         path: '/login',
         config: {
             handler: login,
+            validate: loginValidation,
             description: 'Sign In User'
         }
     },
+
+
 
     {
         method: 'GET',
@@ -52,6 +57,7 @@ const userRoute = [
             auth: AuthConfig.auth,
             plugins: AuthConfig.plugins,
             handler: subscribe,
+            validate: subscribeValidation,
             description: 'Subscribe'
         }
     },
@@ -63,6 +69,7 @@ const userRoute = [
             auth: AuthConfig.auth,
             plugins: AuthConfig.plugins,
             handler: unsubscribe,
+            validate: unsubscribeValidation,
             description: 'UnSubscribe'
         }
     },
@@ -76,6 +83,71 @@ const userRoute = [
             description: 'profile'
         }
     },
+
+
+
+
+    {
+        method: 'GET',
+        path: '/login',
+        config: {
+            handler: (request, reply) => {
+                reply.view('index')
+            },
+
+            description: 'Sign In User'
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/userprofile',
+        config: {
+            handler: (request, reply) => {
+                reply.view('index')
+            },
+
+            description: 'User Profile'
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/signup',
+        config: {
+            handler: (request, reply) => {
+                reply.view('index')
+            },
+
+            description: 'Sign Up'
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/user-profile',
+        config: {
+            handler: (request, reply) => {
+                reply.view('index')
+            },
+
+            description: 'Profile'
+        }
+    },
+
+
+    {
+        method: 'GET',
+        path: '/user-subscribe',
+        config: {
+            handler: (request, reply) => {
+                reply.view('index')
+            },
+
+            description: 'Subscribe'
+        }
+    },
+
 ]
 
 module.exports = userRoute

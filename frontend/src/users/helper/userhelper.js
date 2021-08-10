@@ -1,12 +1,8 @@
-import Cookies from 'js-cookie';
+
 export const signup = (user) => {
     return fetch(`/signup`, {
         method: 'POST',
         body: JSON.stringify(user)
-    }).then(response => {
-        console.log(response);
-    }).catch(err => {
-        console.log(err);
     })
 }
 
@@ -14,10 +10,6 @@ export const login = (user) => {
     return fetch(`/login`, {
         method: 'POST',
         body: JSON.stringify(user)
-    }).then(response => {
-        console.log(response);
-    }).catch(err => {
-        console.log(err);
     })
 }
 
@@ -32,26 +24,26 @@ export const profile = () => {
 export const logout = () => {
     return fetch(`/logout`, {
         method: 'GET'
-    }).then(response => {
-        console.log(response);
-    }).catch(err => {
-        console.log(err);
     })
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
 
 export const isAutheticated = () => {
-    console.log('auth', Cookies);
+    let cookie = document.cookie;
+    console.log(cookie);
+
+    let value;
+    if (cookie.length > 0) {
+        value = JSON.parse(atob(document.cookie.split("=")[1])).loggedIn;
+    }
+
+    console.log('auth', value);
+    console.log('auth', value);
     if (typeof window == "undefined") {
         return false;
     }
-    if (getCookie('sid')) {
-        return JSON.parse(getCookie('sid'));
+    if (value) {
+        return value;
     } else {
         return false;
     }

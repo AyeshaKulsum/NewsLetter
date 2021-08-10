@@ -4,7 +4,7 @@ const db = require('../config/database');
 const UserSourceMapping = db.define('UserSourceMapping', {
 
 }, {
-    paranoid: true
+    paranoid: false
 }
 
 );

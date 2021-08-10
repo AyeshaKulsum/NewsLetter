@@ -26,7 +26,7 @@ const subscribeHelper = async (request) => {
                     source = await Source.create({ FeedUrl: feedUrl, Title: articles.title, LastBuildDate: articles.lastBuildDate, Link: articles.link })
                     articles.items.forEach((element, index) => {
                         Article.create({
-                            Title: element.title, Link: element.link, PubDate: element.pubDate, Author: element.author,
+                            Title: element.title, Link: element.link, PubDate: element.pubDate, Author: element.author, Content: element.content,
                             ContentSnippet: element.contentSnippet, source_id: source.id
                         }).then(async data => {
                             if (index === articles.items.length - 1) {
@@ -98,7 +98,7 @@ const sourcesToSubscribeHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
         const result = await Source.sequelize.query(
-            "select distinct(s.id) as source_id,s.\"FeedUrl\",s.\"Title\",s.\"Link\" from \"Sources\" s left join \"UserSourceMappings\" usm on usm.source_id=s.id where ((usm.user_id=1 and usm.\"deletedAt\" is not null) or(usm.user_id!=1)) and s.\"deletedAt\" is null",
+            "select distinct(s.id) as source_id,s.\"FeedUrl\",s.\"Title\",s.\"Link\" from \"Sources\" s left join \"UserSourceMappings\" usm on usm.source_id=s.id where (usm.user_id is null or usm.user_id!=1) and s.\"deletedAt\" is null",
             {
                 type: QueryTypes.SELECT,
                 replacements: { user_id }
@@ -121,7 +121,7 @@ const profileHelper = async (request) => {
     try {
         console.log('here');
         const { user_id } = request.auth.credentials
-        let result = await User.sequelize.query("select u.\"userName\",u.email,s.\"FeedUrl\",s.\"Link\",s.\"Title\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id where u.id=1 and usm.\"deletedAt\" is null and s.\"deletedAt\" is null", {
+        let result = await User.sequelize.query("select u.\"userName\",s.id as source_id,u.email,s.\"FeedUrl\",s.\"Link\",s.\"Title\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id where u.id=1 and s.\"deletedAt\" is null", {
             type: QueryTypes.SELECT,
             replacements: { user_id }
         })
@@ -130,7 +130,7 @@ const profileHelper = async (request) => {
     }
     catch (err) {
         console.log(err);
-        return { message: 'No sources found', err, status: 'error' }
+        return { message: '', err, status: 'error' }
     }
 }
 
@@ -140,7 +140,7 @@ const fetchOneArticleHelper = async (request) => {
         const { user_id } = request.auth.credentials
         const { source_id } = request.params
         const result = await Article.sequelize.query(
-            "select usm.source_id,s.\"FeedUrl\",s.\"Link\",s.\"Title\",a.\"Title\" as article_title,a.\"Link\" as article_link,a.\"Author\",a.\"Content\",a.\"ContentSnippet\",a.\"PubDate\",s.\"LastBuildDate\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id inner join \"Articles\" a on a.source_id=s.id where u.id=:user_id and usm.\"deletedAt\" is null and s.\"deletedAt\" is null and a.\"deletedAt\" is null and a.source_id=:source_id",
+            "select usm.source_id,s.\"FeedUrl\",s.\"Link\",s.\"Title\",a.\"Title\" as article_title,a.\"Link\" as article_link,a.\"Author\",a.\"Content\",a.\"ContentSnippet\",a.\"PubDate\",s.\"LastBuildDate\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id inner join \"Articles\" a on a.source_id=s.id where u.id=:user_id and s.\"deletedAt\" is null and a.\"deletedAt\" is null and a.source_id=:source_id",
             {
                 type: QueryTypes.SELECT,
                 replacements: { user_id, source_id }
