@@ -3,10 +3,6 @@ export const subscribe = (subscribe) => {
     return fetch(`/subscribe`, {
         method: 'POST',
         body: JSON.stringify(subscribe)
-    }).then(response => {
-        console.log(response);
-    }).catch(err => {
-        console.log(err);
     })
 }
 
@@ -34,9 +30,5 @@ export const fetchAllArticlesOfUser = () => {
 export const fetchArticlesBySourceId = (source_id) => {
     return fetch(`/articles/${source_id}`, {
         method: 'GET'
-    }).then(response => {
-        console.log(response);
-    }).catch(err => {
-        console.log(err);
     })
 }

@@ -29,12 +29,22 @@ const logoutHelper = async (request) => {
 const signupHelper = async (request) => {
     try {
         const { userName, email, password } = request.payload
+        console.log(userName, email, password)
         let user = await User.create({ userName, email, password })
-        let response = {
-            status: 'success',
-            user
+
+        if (user !== null) {
+            let result = {
+                email: user.email,
+                userName: user.userName,
+                id: user.id
+            }
+            let response = {
+                status: 'success',
+                result
+            }
+            return response;
         }
-        return response;
+        return null;
     }
     catch (err) {
 
@@ -58,10 +68,15 @@ const loginHelper = async (request) => {
 
         console.log(user);
 
+        let result = {
+            email: user.email,
+            userName: user.userName,
+            id: user.id
+        }
         if (user !== null) {
             let response = {
                 status: 'success',
-                user
+                result
             }
             return response;
         }
@@ -89,7 +104,11 @@ const fetchArticleseHelper = async (request) => {
 
             }
         );
-        return result;
+        let response = {
+            status: 'success',
+            result
+        }
+        return response;
     }
     catch (err) {
         console.log(err);

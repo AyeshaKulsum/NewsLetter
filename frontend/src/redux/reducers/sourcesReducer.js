@@ -2,14 +2,14 @@ import ACTIONS from "../actions/actionsList";
 
 const initialState = []
 
-const ArticlesReducer = (state = initialState, action) => {
+const SourcesReducer = (state = initialState, action) => {
 
-    console.log("Coming to Articles Reducer", state)
+    console.log("Coming to Sources Reducer", state)
 
     const { type, payload } = action;
 
     switch (type) {
-        case ACTIONS.ARTICLES: {
+        case ACTIONS.SOURCES: {
             return payload;
         }
         default: return state;
@@ -17,4 +17,4 @@ const ArticlesReducer = (state = initialState, action) => {
 
 }
 
-export default ArticlesReducer;
+export default SourcesReducer;

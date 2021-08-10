@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import Base from "../Base";
-import { fetchAllArticlesOfUser } from "./helper/articlehelper";
-
+import { fetchArticlesFromServer } from "../redux/actions/actionCreator";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-    const [articles, setArticles] = useState([])
+    // const [articles, setArticles] = useState([])
 
     useEffect(() => {
-        fetchAllArticlesOfUser().then(async articles => {
-            setArticles(await articles.json())
-            console.log(articles);
-        }).catch(err => console.log(err))
+        dispatch(fetchArticlesFromServer())
     }, [])
-    console.log(articles)
+
+    const dispatch = useDispatch();
+
+    const articles = useSelector(state => state.articles);
+    // console.log('articles', articles)
+    // const state = useSelector(state => state);
+    // console.log('state', state)
+    // const error = useSelector(state => state.user.error_flag);
+    // console.log('error', error)
     return (
         <Base title="Articles" >
             <div className="row">
@@ -27,7 +32,7 @@ const Home = () => {
                             {/* col-md-3  offset-md-1 my-2  */}
                             <div className="card-body">
                                 <h3 className="card-title">{article.article_title}</h3>
-                                <span >{article.ContentSnippet}</span>
+                                <span >{article.Content}</span>
 
                                 <div style={{ position: "relative" }}> <span>{article.Title}</span >
                                     <span style={{ position: "absolute", right: "10px", top: "0px" }}>{article.PubDate}</span></div>
@@ -36,6 +41,13 @@ const Home = () => {
                         </div>
                     );
                 })}
+                {
+                    articles.length === 0 && (
+                        <div>
+                            Please subscribe to view latest articles
+                        </div>
+                    )
+                }
             </div>
 
         </Base>

@@ -10,7 +10,7 @@ let parser = new Parser();
 
 const subscribeHelper = async (request) => {
     try {
-        const { source_id, feedUrl } = request.payload
+        let { source_id, feedUrl } = request.payload
         const { user_id } = request.auth.credentials
         if (feedUrl) {
             let source = await Source.findOne({
@@ -18,7 +18,8 @@ const subscribeHelper = async (request) => {
                     FeedUrl: feedUrl
                 }
             });
-            console.log("source")
+
+            console.log("source", source)
             if (!source) {
                 let mapSourcePromise = new Promise(async (resolve, reject) => {
                     let articles = await parser.parseURL(feedUrl);
@@ -43,6 +44,7 @@ const subscribeHelper = async (request) => {
 
             }
             else {
+                source_id = source.id
                 let subscribeExists = await UserSourceMapping.findOne({
                     where: {
                         user_id, source_id
@@ -53,7 +55,7 @@ const subscribeHelper = async (request) => {
                     return { status: 'success', subscribe };
                 }
                 else {
-                    return { message: 'Subscribe already exists', status: 'success' }
+                    return { message: 'Subscribe already exists', status: 'error' }
                 }
             }
         }
@@ -98,7 +100,7 @@ const sourcesToSubscribeHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
         const result = await Source.sequelize.query(
-            "select distinct(s.id) as source_id,s.\"FeedUrl\",s.\"Title\",s.\"Link\" from \"Sources\" s left join \"UserSourceMappings\" usm on usm.source_id=s.id where (usm.user_id is null or usm.user_id!=1) and s.\"deletedAt\" is null",
+            "select distinct(s.id) as source_id,s.\"FeedUrl\",s.\"Title\",s.\"Link\" from \"Sources\" s where s.id not in (select source_id from \"UserSourceMappings\" where user_id=:user_id ) and s.\"deletedAt\" is null",
             {
                 type: QueryTypes.SELECT,
                 replacements: { user_id }
@@ -108,7 +110,11 @@ const sourcesToSubscribeHelper = async (request) => {
                 paranoid: true
             }
         );
-        return result;
+        let response = {
+            status: 'success',
+            result
+        }
+        return response;
     }
     catch (err) {
         console.log(err);
@@ -119,14 +125,41 @@ const sourcesToSubscribeHelper = async (request) => {
 
 const profileHelper = async (request) => {
     try {
-        console.log('here');
         const { user_id } = request.auth.credentials
-        let result = await User.sequelize.query("select u.\"userName\",s.id as source_id,u.email,s.\"FeedUrl\",s.\"Link\",s.\"Title\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id where u.id=1 and s.\"deletedAt\" is null", {
+        console.log('here', user_id);
+        // const user = models.User.findOne({
+        //     where: {
+        //         id: user_id
+        //     },
+        //     include: [
+        //         {
+        //             model: models.Account,
+        //             as: 'account',
+        //             required: true,
+        //             where: whereConditionForAccount,
+        //         },
+        //     ],
+        // })
+        // s
+        let data = await User.sequelize.query("select u.\"userName\",s.id as source_id,u.email,s.\"FeedUrl\",s.\"Link\",s.\"Title\" from \"Users\" u left join \"UserSourceMappings\" usm on usm.user_id=u.id and usm.user_id=:user_id left join \"Sources\" s on s.id=usm.source_id and s.\"deletedAt\" is null where u.id=:user_id ", {
             type: QueryTypes.SELECT,
             replacements: { user_id }
         })
+        let subscribedSources = null;
+        if (data[0].source_id != null) {
+            subscribedSources = data
+        }
+        let result = {
+            userName: data[0].userName,
+            email: data[0].email,
+            subscribedSources
+        }
         console.log(result);
-        return result;
+        let response = {
+            status: 'success',
+            result
+        }
+        return response;
     }
     catch (err) {
         console.log(err);
@@ -148,7 +181,11 @@ const fetchOneArticleHelper = async (request) => {
             }
         );
         console.log(result);
-        return result;
+        let response = {
+            status: 'success',
+            result
+        }
+        return response;
     }
     catch (err) {
         console.log(err);

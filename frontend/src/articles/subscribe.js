@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 import Base from "../Base"
-import { fetchSourcesToSubscribe, subscribe } from "./helper/articlehelper"
+import { fetchArticlesFromServer, fetchErrorMessage, fetchSourcesToSubscribeFromServer } from "../redux/actions/actionCreator"
+import { subscribe } from "./helper/articlehelper"
 
 
 const Subscribe = () => {
     const [values, setValues] = useState({ feedUrl: '', source_id: -1 })
     const [isSubmitEnabled, setIsSubmitEnabled] = useState(false)
     const history = useHistory();
-
-    const [sources, setSources] = useState([])
+    const dispatch = useDispatch();
+    const sources = useSelector(state => state.sources);
+    // const [sources, setSources] = useState([])
     useEffect(() => {
-        fetchSourcesToSubscribe().then(async (s) => {
-
-            setSources(await s.json())
-        }).catch((err) => { console.log(err); })
+        dispatch(fetchSourcesToSubscribeFromServer())
     }, [])
 
     useEffect(() => {
-        console.log(sources)
+
     }, [sources])
 
     useEffect(() => {
@@ -40,18 +40,29 @@ const Subscribe = () => {
 
         }
         console.log('value', values);
-        subscribe(values).then(response => {
-            console.log(response);
-            let s_id = values.source_id;
-            let newSources = [...sources];
-            newSources.forEach((s, i) => {
-                if (s.source_id === s_id) {
-                    newSources.splice(i, 1)
-                }
-            })
-            setSources([...newSources])
-            history.push('/user-subscribe')
-        }).catch(err => { console.log(err); })
+        subscribe(values).then(async res => {
+            let response = await res.json()
+            if (response.status === 'error') {
+                dispatch(fetchErrorMessage(response.message));
+            }
+            else {
+                dispatch(fetchSourcesToSubscribeFromServer())
+                // let s_id = values.source_id;
+                // let newSources = [...sources];
+                // newSources.forEach((s, i) => {
+                //     if (s.source_id === s_id) {
+                //         newSources.splice(i, 1)
+                //     }
+                // })
+                dispatch(fetchSourcesToSubscribe())
+                // setSources([...newSources])
+                // history.push('/user-subscribe')
+            }
+
+        }).catch(err => {
+            console.log(err, 'errorrr');
+            dispatch(fetchErrorMessage(err.message));
+        })
     }
     const subscribebtn = (source_id, feedUrl, event) => {
         console.log(sources);
@@ -76,10 +87,9 @@ const Subscribe = () => {
         <Base title="Subscribe Form">
             <div >{subscribeForm()}</div>
             <div className="row">
-
                 {sources && sources.map((source) => {
                     return (
-                        <div key={source.source_id} className="card col-md-3   my-2 border border-success">
+                        <div key={source.source_id} className="card col-md-3 mx-3  my-3 border border-success">
 
                             <div className="card-body">
                                 <h5 className="card-title">{source.Title}</h5>

@@ -13,7 +13,7 @@ const Article = db.define('Article', {
     },
     Author: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     }
     ,
     Content: {
@@ -23,7 +23,7 @@ const Article = db.define('Article', {
     ,
     ContentSnippet: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: true
     }
     ,
     Categories: {
@@ -38,7 +38,7 @@ const Article = db.define('Article', {
     ,
     PubDate: {
         type: Sequelize.DATEONLY,
-        allowNull: false
+        allowNull: true
     }
     // ,
     // IsoDate: {

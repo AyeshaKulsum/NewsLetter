@@ -14,7 +14,7 @@ const Source = db.define('Source', {
     ,
     LastBuildDate: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
     }
     ,
     Link: {

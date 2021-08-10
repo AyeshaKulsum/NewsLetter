@@ -1,4 +1,8 @@
 import ReactDOM from 'react-dom';
 import Routes from './Routes';
 import './index.css'
-ReactDOM.render(<Routes />, document.getElementById('rss'));
+import { Provider } from "react-redux";
+import store from "./redux/store";
+ReactDOM.render(
+    <Provider store={store}>
+        <Routes /></Provider>, document.getElementById('rss'));

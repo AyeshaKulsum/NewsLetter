@@ -7,13 +7,19 @@ const { uuid } = require('uuidv4');
 exports.signup = async (request, reply) => {
     try {
         let signup = await signupHelper(request);
+        console.log(signup)
         if (signup && signup.status === 'success') {
-            sessionHelper(request, reply, signup.user.id, '/articles');
+            sessionHelper(request, reply, signup.result.id, '/');
+        } else {
+            reply({
+                "status": "error",
+                'message': "Internal Error"
+            }).code(500)
         }
 
     }
     catch (err) {
-        reply({ message: 'signup error', err, status: 'error' }).statusCode(500)
+        reply({ message: 'signup error', err, status: 'error' }).code(500)
     }
 }
 
@@ -36,17 +42,17 @@ exports.login = async (request, reply) => {
         let login = await loginHelper(request);
         console.log('login', login);
         if (login && login.status === 'success') {
-            sessionHelper(request, reply, login.user.id, '/articles');
+            sessionHelper(request, reply, login.result.id, '/');
         } else {
             reply({
                 "status": "error",
                 'message': "Internal Error"
-            })
+            }).code(500)
         }
 
     }
     catch (err) {
-        reply({ message: 'login error', err, status: 'error' }).statusCode(500)
+        reply({ message: 'Unable to login', err, status: 'error' }).code(500)
     }
 }
 
@@ -54,6 +60,7 @@ exports.login = async (request, reply) => {
 exports.subscribe = async (request, reply) => {
     try {
         let subscribe = await subscribeHelper(request);
+        console.log(subscribe);
         if (subscribe) {
             reply(subscribe)
         } else {
@@ -65,7 +72,7 @@ exports.subscribe = async (request, reply) => {
 
     }
     catch (err) {
-        reply({ message: 'subscribe error', err, status: 'error' }).statusCode(500)
+        reply({ message: 'subscribe error', err, status: 'error' }).code(500)
     }
 }
 
@@ -83,7 +90,7 @@ exports.unsubscribe = async (request, reply) => {
 
     }
     catch (err) {
-        reply({ message: 'unsubscribe error', err, status: 'error' }).statusCode(500)
+        reply({ message: 'unsubscribe error', err, status: 'error' }).code(500)
     }
 }
 
@@ -94,7 +101,7 @@ exports.profile = async (request, reply) => {
         reply(profile)
     }
     catch (err) {
-        reply({ message: 'profile error', err, status: 'error' }).statusCode(500)
+        reply({ message: 'profile error', err, status: 'error' }).code(500)
     }
 }
 
@@ -108,6 +115,6 @@ exports.logout = async (request, reply) => {
 
     }
     catch (err) {
-        reply({ message: 'logout error', err, status: 'error' }).statusCode(500)
+        reply({ message: 'logout error', err, status: 'error' }).code(500)
     }
 }
