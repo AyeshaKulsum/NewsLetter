@@ -21,14 +21,22 @@ export const fetchSourcesToSubscribe = () => {
 
 
 export const fetchAllArticlesOfUser = () => {
-    console.log('here');
     return fetch(`/articles`, {
         method: 'GET'
     })
 }
 
 export const fetchArticlesBySourceId = (source_id) => {
+    console.log(source_id);
     return fetch(`/articles/${source_id}`, {
+        method: 'GET'
+    })
+}
+
+
+
+export const fetchAllSourcesDB = () => {
+    return fetch(`/fetch-all-sources`, {
         method: 'GET'
     })
 }

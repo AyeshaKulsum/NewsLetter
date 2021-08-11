@@ -1,4 +1,4 @@
-import { fetchAllArticlesOfUser, fetchSourcesToSubscribe } from "../../articles/helper/articlehelper"
+import { fetchAllArticlesOfUser, fetchAllSourcesDB, fetchSourcesToSubscribe } from "../../articles/helper/articlehelper"
 import { profile } from "../../users/helper/userhelper"
 import ACTIONS from "./actionsList"
 
@@ -29,6 +29,15 @@ export const fetchArticles = data => {
 export const fetchSources = data => {
     return {
         type: ACTIONS.SOURCES,
+        payload: data
+    }
+}
+
+
+
+export const fetchAllSources = data => {
+    return {
+        type: ACTIONS.ALL_SOURCES,
         payload: data
     }
 }
@@ -106,6 +115,27 @@ export const fetchSourcesToSubscribeFromServer = () => {
                 dispatch(fetchErrorMessage(''));
                 dispatch(fetchSuccessMessage(''));
                 dispatch(fetchSources(s.result));
+
+            }
+        }).catch(err => {
+            dispatch(fetchErrorMessage(err.message));
+        }
+        )
+
+    }
+}
+
+export const fetchAllSourcesFromServer = () => {
+    return dispatch => {
+        fetchAllSourcesDB().then(async sources => {
+            let s = await sources.json();
+            if (s.status === 'error') {
+                dispatch(fetchErrorMessage(s.message));
+            }
+            else {
+                dispatch(fetchErrorMessage(''));
+                dispatch(fetchSuccessMessage(''));
+                dispatch(fetchAllSources(s.result));
 
             }
         }).catch(err => {

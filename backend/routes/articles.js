@@ -1,4 +1,4 @@
-const { fetchAllArticles, sourcesToSubscribe, fetchOneArticles } = require('../handlers/articles')
+const { fetchAllArticles, sourcesToSubscribe, fetchOneArticles, allSources } = require('../handlers/articles')
 
 const AuthConfig = {
     auth: {
@@ -67,6 +67,43 @@ const articlesRoute = [
             plugins: AuthConfig.plugins,
             handler: sourcesToSubscribe,
             description: 'Gets all sources'
+        }
+    },
+    {
+        method: 'GET',
+        path: '/fetch-all-sources',
+        config: {
+            auth: AuthConfig.auth,
+            plugins: AuthConfig.plugins,
+            handler: allSources,
+            description: 'Gets all sources'
+        }
+    },
+    {
+        method: 'GET',
+        path: '/all-sources',
+        config: {
+            auth: AuthConfig.auth,
+            plugins: AuthConfig.plugins,
+
+            handler: (request, reply) => {
+                reply.view('index')
+            },
+            description: 'Gets all sources'
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/fetch-article/{source_id}',
+        config: {
+            auth: AuthConfig.auth,
+            plugins: AuthConfig.plugins,
+
+            handler: (request, reply) => {
+                reply.view('index')
+            },
+            description: 'Get articles'
         }
     },
 

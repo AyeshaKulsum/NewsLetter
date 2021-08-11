@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import { logoutSuccess } from "./redux/actions/actionCreator";
-import { isAutheticated, logout } from "./users/helper/userhelper";
+import { logout } from "./users/helper/userhelper";
 
 const currentTab = (history, path) => {
     if (history.location.pathname === path) {
@@ -46,6 +46,17 @@ const Menu = ({ history }) => {
                             to="/user-profile"
                         >
                             Profile
+                        </Link>
+                    </li>
+                )}
+                {isAuth && (
+                    <li className="nav-item">
+                        <Link
+                            style={currentTab(history, "/all-sources")}
+                            className="nav-link"
+                            to="/all-sources"
+                        >
+                            All Sources
                         </Link>
                     </li>
                 )}

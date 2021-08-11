@@ -5,6 +5,7 @@ const UserSourceMapping = require("../model/usersourcemapping");
 let Parser = require('rss-parser');
 const { QueryTypes } = require("sequelize");
 const User = require("../model/user");
+const client = require('../config/redis');
 
 let parser = new Parser();
 
@@ -32,6 +33,7 @@ const subscribeHelper = async (request) => {
                             }
                         })
                     });
+                    sources = fetchAllSourcesPostgres();
                 });
 
                 let suc = await mapSourcePromise;
@@ -88,6 +90,54 @@ const unsubscribeHelper = async (request) => {
         return { message: 'Unable to unsubscribe', err, status: 'error' }
     }
 
+}
+
+const allSourcesHelper = (request) => {
+    let sources = null;
+    try {
+        let redisPromise = new Promise((resolve, reject) => {
+            client.get(`FETCH_ALL_SOURCES`, (err, value) => {
+                if (err) throw err;
+                if (value) {
+                    console.log('Data from Redis', JSON.parse(value));
+                    sources = JSON.parse(value);
+                }
+                else {
+                    console.log('Data from postgres');
+                    sources = fetchAllSourcesPostgres();
+                }
+                if (sources !== null) {
+                    resolve(sources)
+                }
+            });
+
+        })
+        return redisPromise;
+    }
+    catch (err) {
+        return { message: 'No sources found', err, status: 'error' }
+    }
+
+}
+
+const fetchAllSourcesPostgres = async (request) => {
+    try {
+        const result = await Source.sequelize.query(
+            "select distinct(s.id) as source_id,s.\"FeedUrl\",s.\"Title\",s.\"Link\" from \"Sources\" s where s.\"deletedAt\" is null",
+            {
+                type: QueryTypes.SELECT,
+            }
+        );
+        let response = {
+            status: 'success',
+            result
+        }
+        client.setex("FETCH_ALL_SOURCES", 3800, JSON.stringify(response));
+        return response;
+    }
+    catch (err) {
+        return { message: 'No sources found', err, status: 'error' }
+    }
 }
 
 const sourcesToSubscribeHelper = async (request) => {
@@ -148,6 +198,7 @@ const fetchOneArticleHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
         const { source_id } = request.params
+        console.log(source_id);
         const result = await Article.sequelize.query(
             "select usm.source_id,s.\"FeedUrl\",s.\"Link\",s.\"Title\",a.\"Title\" as article_title,a.\"Link\" as article_link,a.\"Author\",a.\"Content\",a.\"ContentSnippet\",a.\"PubDate\",s.\"LastBuildDate\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id inner join \"Articles\" a on a.source_id=s.id where u.id=:user_id and s.\"deletedAt\" is null and a.\"deletedAt\" is null and a.source_id=:source_id",
             {
@@ -164,9 +215,8 @@ const fetchOneArticleHelper = async (request) => {
         return response;
     }
     catch (err) {
-        console.log(err);
         return { message: 'Source not found', err, status: 'error' }
     }
 }
 
-module.exports = { unsubscribeHelper, subscribeHelper, sourcesToSubscribeHelper, profileHelper, fetchOneArticleHelper }
+module.exports = { unsubscribeHelper, subscribeHelper, sourcesToSubscribeHelper, profileHelper, fetchOneArticleHelper, allSourcesHelper }
