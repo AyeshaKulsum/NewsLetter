@@ -13,6 +13,7 @@ const User = require('./model/user')
 const Source = require('./model/source')
 const Article = require('./model/article')
 const UserSourceMapping = require('./model/usersourcemapping')
+const task = require('./config/cronjobs')
 //DB
 const db = require('./config/database');
 db.authenticate().then(() =>

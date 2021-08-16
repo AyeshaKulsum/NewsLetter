@@ -6,9 +6,13 @@ let Parser = require('rss-parser');
 const { QueryTypes } = require("sequelize");
 const User = require("../model/user");
 const client = require('../config/redis');
-
+var crypto = require('crypto');
 let parser = new Parser();
-
+const createHash = string => {
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(JSON.stringify(string));
+    return md5sum.digest('hex');
+}
 const subscribeHelper = async (request) => {
     try {
         let { source_id, feedUrl } = request.payload
@@ -22,7 +26,7 @@ const subscribeHelper = async (request) => {
             if (!source) {
                 let mapSourcePromise = new Promise(async (resolve, reject) => {
                     let articles = await parser.parseURL(feedUrl);
-                    source = await Source.create({ FeedUrl: feedUrl, Title: articles.title, LastBuildDate: articles.lastBuildDate, Link: articles.link })
+                    source = await Source.create({ FeedUrl: feedUrl, Title: articles.title, LastBuildDate: articles.lastBuildDate, Link: articles.link, Hash: createHash(JSON.stringify(articles)) })
                     articles.items.forEach((element, index) => {
                         Article.create({
                             Title: element.title, Link: element.link, PubDate: element.pubDate, Author: element.author, Content: element.content,

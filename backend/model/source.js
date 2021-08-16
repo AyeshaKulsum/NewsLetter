@@ -21,6 +21,11 @@ const Source = db.define('Source', {
         type: Sequelize.STRING,
         allowNull: false
     }
+    ,
+    Hash: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    }
 }, {
     paranoid: true
 }
