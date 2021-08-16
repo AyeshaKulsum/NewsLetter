@@ -27,7 +27,6 @@ export const fetchAllArticlesOfUser = () => {
 }
 
 export const fetchArticlesBySourceId = (source_id) => {
-    console.log(source_id);
     return fetch(`/articles/${source_id}`, {
         method: 'GET'
     })

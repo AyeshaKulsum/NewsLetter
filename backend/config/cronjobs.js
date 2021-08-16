@@ -9,7 +9,6 @@ const { updateArticlesJob } = require('../helpers/job');
 // cron won’t start automatically
 var task = cron.schedule('0 * * * * *', () => {
     // console.log('Printing this line every day at 1750 Hours London Time.');
-    //console.log("1");
     updateArticlesJob();
 }
     // ,

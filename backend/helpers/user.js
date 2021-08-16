@@ -2,7 +2,9 @@ const User = require("../model/user");
 
 const Session = require("../model/session");
 const Article = require("../model/article");
-const { QueryTypes } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
+const UserSourceMapping = require("../model/usersourcemapping");
+const Source = require("../model/source");
 
 const logoutHelper = async (request) => {
     try {
@@ -89,14 +91,26 @@ const loginHelper = async (request) => {
 const fetchArticleseHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
-        const result = await Article.sequelize.query(
-            "select usm.source_id,s.\"FeedUrl\",s.\"Link\",s.\"Title\",a.\"Title\" as article_title,a.\"Link\" as article_link,a.\"Author\",a.\"Content\",a.\"ContentSnippet\",a.\"PubDate\",s.\"LastBuildDate\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id inner join \"Articles\" a on a.source_id=s.id where u.id=:user_id and s.\"deletedAt\" is null and a.\"deletedAt\" is null",
-            {
-                type: QueryTypes.SELECT,
-                replacements: { user_id }
+        let sourceids = [... (await UserSourceMapping.findAll({
+            where: {
+                user_id
+            },
+            raw: true,
+            attributes: ['source_id']
+        }))].map(sources => sources.source_id);
+        let result = await Article.findAll({
+            where: { source_id: sourceids },
+            raw: true,
+            include: [{
+                model: Source,
+                attributes: [],
+                required: true
+            }],
+            attributes: ['source_id', ['Title', 'article_title'], ['Link', 'article_link'], ['Author', 'Author'], ['Content', 'Content'], ['ContentSnippet', 'ContentSnippet'], ['PubDate', 'PubDate'],
+                [Sequelize.col('Source.FeedUrl'), 'FeedUrl'], [Sequelize.col('Source.Link'), 'Link']
+                , [Sequelize.col('Source.Title'), 'Title'], [Sequelize.col('Source.LastBuildDate'), 'LastBuildDate']]
+        })
 
-            }
-        );
         let response = {
             status: 'success',
             result

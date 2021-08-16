@@ -3,7 +3,7 @@ const Article = require("../model/article");
 const Source = require("../model/source");
 const UserSourceMapping = require("../model/usersourcemapping");
 let Parser = require('rss-parser');
-const { QueryTypes } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const User = require("../model/user");
 const client = require('../config/redis');
 var crypto = require('crypto');
@@ -126,12 +126,8 @@ const allSourcesHelper = (request) => {
 
 const fetchAllSourcesPostgres = async (request) => {
     try {
-        const result = await Source.sequelize.query(
-            "select distinct(s.id) as source_id,s.\"FeedUrl\",s.\"Title\",s.\"Link\" from \"Sources\" s where s.\"deletedAt\" is null",
-            {
-                type: QueryTypes.SELECT,
-            }
-        );
+
+        const result = await Source.findAll({ attributes: [['id', 'source_id'], 'FeedUrl', 'Title', 'Link'] });
         let response = {
             status: 'success',
             result
@@ -147,17 +143,15 @@ const fetchAllSourcesPostgres = async (request) => {
 const sourcesToSubscribeHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
-        const result = await Source.sequelize.query(
-            "select distinct(s.id) as source_id,s.\"FeedUrl\",s.\"Title\",s.\"Link\" from \"Sources\" s where s.id not in (select source_id from \"UserSourceMappings\" where user_id=:user_id ) and s.\"deletedAt\" is null",
-            {
-                type: QueryTypes.SELECT,
-                replacements: { user_id }
-
+        let sourceids = [... (await UserSourceMapping.findAll({
+            where: {
+                user_id
             },
-            {
-                paranoid: true
-            }
-        );
+            raw: true,
+            attributes: ['source_id']
+        }))].map(sources => sources.source_id);
+        sourceids.push(-1)
+        const result = await Source.findAll({ where: { [Op.not]: { id: sourceids } }, attributes: [['id', 'source_id'], 'FeedUrl', 'Title', 'Link'] })
         let response = {
             status: 'success',
             result
@@ -173,17 +167,28 @@ const sourcesToSubscribeHelper = async (request) => {
 const profileHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
-        let data = await User.sequelize.query("select u.\"userName\",s.id as source_id,u.email,s.\"FeedUrl\",s.\"Link\",s.\"Title\" from \"Users\" u left join \"UserSourceMappings\" usm on usm.user_id=u.id and usm.user_id=:user_id left join \"Sources\" s on s.id=usm.source_id and s.\"deletedAt\" is null where u.id=:user_id ", {
-            type: QueryTypes.SELECT,
-            replacements: { user_id }
+        let userDetails = await User.findOne({
+            where: {
+                id: user_id,
+
+            },
+            attributes: ['userName', 'email']
         })
-        let subscribedSources = null;
-        if (data[0].source_id != null) {
-            subscribedSources = data
-        }
+        let subscribedSources = await UserSourceMapping.findAll({
+            where: { user_id },
+            raw: true,
+            include: [
+                {
+                    model: Source,
+                    raw: true,
+                    attributes: []
+                }
+            ],
+            attributes: ['source_id', [Sequelize.col('Source.FeedUrl'), 'FeedUrl'], [Sequelize.col('Source.Link'), 'Link'], [Sequelize.col('Source.Title'), 'Title']]
+        })
         let result = {
-            userName: data[0].userName,
-            email: data[0].email,
+            userName: userDetails.userName,
+            email: userDetails.email,
             subscribedSources
         }
         let response = {
@@ -202,16 +207,14 @@ const fetchOneArticleHelper = async (request) => {
     try {
         const { user_id } = request.auth.credentials
         const { source_id } = request.params
-        console.log(source_id);
-        const result = await Article.sequelize.query(
-            "select usm.source_id,s.\"FeedUrl\",s.\"Link\",s.\"Title\",a.\"Title\" as article_title,a.\"Link\" as article_link,a.\"Author\",a.\"Content\",a.\"ContentSnippet\",a.\"PubDate\",s.\"LastBuildDate\" from \"Users\" u inner join \"UserSourceMappings\" usm on usm.user_id=u.id inner join \"Sources\" s on s.id=usm.source_id inner join \"Articles\" a on a.source_id=s.id where u.id=:user_id and s.\"deletedAt\" is null and a.\"deletedAt\" is null and a.source_id=:source_id",
-            {
-                type: QueryTypes.SELECT,
-                replacements: { user_id, source_id }
+        let result = await Article.findAll({
+            where: { source_id },
+            raw: true,
+            include: [{
+                model: Source,
 
-            }
-        );
-        console.log(result);
+            }]
+        })
         let response = {
             status: 'success',
             result

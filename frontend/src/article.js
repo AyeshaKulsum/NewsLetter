@@ -13,7 +13,6 @@ const Article = ({ match }) => {
     useEffect(() => {
         fetchArticlesBySourceId(match.params.source_id).then(async response => {
             let a = await response.json();
-            console.log(a);
             if (a.status === 'error') {
                 dispatch(fetchErrorMessage(s.message));
             }
@@ -21,7 +20,7 @@ const Article = ({ match }) => {
                 dispatch(fetchErrorMessage(''));
                 dispatch(fetchSuccessMessage(''));
                 setArticles(a.result);
-                setSourceTitle(a.result[0] ? 'Articles from ' + a.result[0].Title : 'Articles')
+                setSourceTitle(a.result[0] ? 'Articles from ' + a.result[0]['Source.Title'] : 'Articles')
             }
         }).catch(err => {
             dispatch(fetchErrorMessage(err.message));
@@ -35,13 +34,13 @@ const Article = ({ match }) => {
             {articles && articles.map((article, index) => {
                 return (
                     <div key={index} onClick={() => {
-                        window.open(article.article_link, '_blank').focus();
+                        window.open(article.Link, '_blank').focus();
 
                     }} className="card my-2 ml-1 mx-1 border border-success">
                         <div className="card-body">
-                            <h3 className="card-title">{article.article_title}</h3>
-                            <span >{article.Content}</span>
-
+                            <h3 className="card-title">{article.Title}</h3>
+                            {/* <span >{article.Content}</span> */}
+                            <div dangerouslySetInnerHTML={{ __html: article.Content }} />
                             <div style={{ position: "relative" }}> <span>{article.Title}</span >
                                 <span style={{ position: "absolute", right: "10px", top: "0px" }}>{article.PubDate}</span></div>
 
