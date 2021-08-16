@@ -27,7 +27,7 @@ const Home = () => {
                             {/* col-md-3  offset-md-1 my-2  */}
                             <div className="card-body">
                                 <h3 className="card-title">{article.article_title}</h3>
-                                <span >{article.Content}</span>
+                                <div dangerouslySetInnerHTML={{ __html: article.Content }} />
 
                                 <div style={{ position: "relative" }}> <span>{article.Title}</span >
                                     <span style={{ position: "absolute", right: "10px", top: "0px" }}>{article.PubDate}</span></div>
