@@ -14,6 +14,8 @@ const Source = require('./model/source')
 const Article = require('./model/article')
 const UserSourceMapping = require('./model/usersourcemapping')
 const task = require('./config/cronjobs')
+const { elasticSearchClient } = require('./config/elasticsearch')
+
 //DB
 const db = require('./config/database');
 db.authenticate().then(() =>
@@ -129,7 +131,6 @@ const init = async () => {
 init()
 process.on('unhandledRejection', (err) => {
     console.log('Error :', err);
-    process.exit(1);
 })
 
 module.exports = server;

@@ -1,3 +1,4 @@
+const { searchArticleseHelper } = require('../helpers/articles');
 const { fetchArticleseHelper } = require('../helpers/user');
 const { sourcesToSubscribeHelper, fetchOneArticleHelper, allSourcesHelper } = require('../helpers/usersourcemapping');
 
@@ -10,7 +11,15 @@ exports.fetchAllArticles = async (request, reply) => {
         reply({ message: 'No Articles found', err, status: 'error' }).code(500)
     }
 }
-
+exports.searchArticles = async (request, reply) => {
+    try {
+        let articles = await searchArticleseHelper(request);
+        reply(articles)
+    }
+    catch (err) {
+        reply({ message: 'No Articles found', err, status: 'error' }).code(500)
+    }
+}
 exports.sourcesToSubscribe = async (request, reply) => {
     try {
         let sources = await sourcesToSubscribeHelper(request);
@@ -33,7 +42,7 @@ exports.allSources = async (request, reply) => {
 
 exports.fetchOneArticles = async (request, reply) => {
     try {
-        let articles = await fetchOneArticleHelper(request);
+        let articles = await fetchOneArticleHelper(request.params.source_id);
         reply(articles)
     }
     catch (err) {

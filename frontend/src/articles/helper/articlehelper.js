@@ -26,6 +26,14 @@ export const fetchAllArticlesOfUser = () => {
     })
 }
 
+
+export const searchArticlesOfUser = (query) => {
+    return fetch(`/articles/search`, {
+        method: 'POST',
+        body: JSON.stringify({ query })
+    })
+}
+
 export const fetchArticlesBySourceId = (source_id) => {
     return fetch(`/articles/${source_id}`, {
         method: 'GET'

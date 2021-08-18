@@ -7,6 +7,7 @@ const { Op, Sequelize } = require("sequelize");
 const User = require("../model/user");
 const client = require('../config/redis');
 var crypto = require('crypto');
+const { queryToAddToES } = require("./articles");
 let parser = new Parser();
 const createHash = string => {
     var md5sum = crypto.createHash('md5');
@@ -17,6 +18,7 @@ const subscribeHelper = async (request) => {
     try {
         let { source_id, feedUrl } = request.payload
         const { user_id } = request.auth.credentials
+        let articlesToES = []
         if (feedUrl) {
             let source = await Source.findOne({
                 where: {
@@ -32,12 +34,29 @@ const subscribeHelper = async (request) => {
                             Title: element.title, Link: element.link, PubDate: element.pubDate, Author: element.author, Content: element.content,
                             ContentSnippet: element.contentSnippet, source_id: source.id
                         }).then(async data => {
+                            let a = {
+                                "id": data.id,
+                                "Title": source.Title,
+                                "Link": data.Link,
+                                "Author": data.Author,
+                                "Content": data.Content,
+                                "ContentSnippet": data.ContentSnippet,
+                                "Categories": data.Categories,
+                                "PubDate": data.PubDate,
+                                "source_id": source.id,
+                                "article_title": data.Title,
+                                "FeedUrl": source.FeedUrl
+                            };
+                            articlesToES.push(a);
                             if (index === articles.items.length - 1) {
+                                sources = fetchAllSourcesPostgres();
+                                queryToAddToES('rss', 'articles', articlesToES);
                                 resolve();
                             }
                         })
                     });
-                    sources = fetchAllSourcesPostgres();
+
+
                 });
 
                 let suc = await mapSourcePromise;
@@ -47,12 +66,26 @@ const subscribeHelper = async (request) => {
 
             }
             else {
+
                 source_id = source.id
                 let subscribeExists = await UserSourceMapping.findOne({
                     where: {
                         user_id, source_id
                     }
                 })
+                // let a = [{
+                //     "id": 222,
+                //     "Title": "ABC",
+                //     "Link": "http",
+                //     "Author": "auth",
+                //     "Content": "content",
+                //     "ContentSnippet": "cont snip",
+                //     "Categories": "dd",
+                //     "PubDate": "date",
+                //     "source_id": 1
+                // }]
+                // //await fetchOneArticleHelper(source.source_id);
+                // await queryToAddToES('rss', 'articles', a);
                 if (!subscribeExists) {
                     let subscribe = await UserSourceMapping.create({ user_id, source_id });
                     return { status: 'success', subscribe };
@@ -61,6 +94,7 @@ const subscribeHelper = async (request) => {
                     return { message: 'Subscribe already exists', status: 'error' }
                 }
             }
+
         }
 
 
@@ -203,10 +237,8 @@ const profileHelper = async (request) => {
 }
 
 
-const fetchOneArticleHelper = async (request) => {
+const fetchOneArticleHelper = async (source_id) => {
     try {
-        const { user_id } = request.auth.credentials
-        const { source_id } = request.params
         let result = await Article.findAll({
             where: { source_id },
             raw: true,

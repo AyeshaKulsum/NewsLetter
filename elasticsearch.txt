@@ -1,0 +1,164 @@
+PUT /rss
+{
+  "mappings": {
+    "articles":{
+      "properties":{
+        "Title":{
+          "type":"text"
+        },
+        "Link":{
+          "type":"text"
+        },
+        "Author":{
+          "type":"text"
+        },
+        "Content":{
+          "type":"text"
+        },
+        "ContentSnippet":{
+          "type":"text"
+        },
+        "Categories":{
+          "type":"text"
+        },
+        "PubDate":{
+          "type":"text"
+        },
+        "source_id":{
+          "type":"integer"
+        },
+        "article_title":{
+          "type":"text"
+        },
+        "FeedUrl":{
+          "type":"text"
+        }
+      }
+    }
+  }
+}
+
+GET /rss/articles/_search
+{
+      "query":{
+        "bool":{
+          "must":{
+             "match_phrase": {
+      "Content": "India"
+    }
+          }, "filter":{
+    "terms": {
+      "source_id": [12,13]
+    }
+  }
+        }
+   
+  }
+}
+
+GET /rss/articles/_search?q=*
+
+GET /rss/articles/_delete_by_query
+{
+  "query":{
+    "match_all":{
+      
+    }
+  }
+}
+
+GET /_analyze?analyzer=standard&text=Book
+
+GET /_cluster/health
+
+GET /_cat/nodes/?v
+
+GET /_cat/indices/?v
+
+GET /_nodes
+
+DELETE /rss
+
+//ecommerce
+
+PUT /ecommerce
+{
+  "mappings": {
+    "product":{
+      "properties":{
+        "name":{
+          "type":"text"
+        },
+        "price":{
+          "type":"double"
+        },
+        "description":{
+          "type":"text"
+        },
+        "status":{
+          "type":"text"
+        },
+        "quantity":{
+          "type":"integer"
+        },
+        "categories":{
+          "type":"nested",
+          "properties":{
+            "name":{
+              "type":"text"
+            }
+          }
+        },
+        "tags":{
+          "type":"text"
+        }
+      }
+    }
+  }
+}
+
+PUT /ecommerce/product/1001 
+{
+  "name":"Pen",
+  "price":234.0,
+  "description":"A pen",
+  "status":"Active",
+  "quantity":50,
+  "categories":[{
+    "name":"Neccesaries"
+  }],
+  "tags":["fluid","ink","ball point","liquid flow","gel"]
+}
+
+POST /ecommerce/product/1001/_update
+{
+  "doc":{
+    "description":"A pen type"
+  }
+}
+
+
+//bulk operation
+POST /ecommerce/product/_bulk
+{"index":{"_id":"1002"}}
+{"name":"Book","price":500.0,"description":"A Book","status":"Active","quantity":25,"categories":[{"name":"Neccesaries"}],"tags":["fiction","novel","comedy"]}
+{"index":{"_id":1003}}
+{"name":"Mouse","price":1000.0,"description":"A Mouse","status":"Active","quantity":20,"categories":[{"name":"Electronics"}],"tags":["Dell","Amazon Brand","Apple"]}
+
+POST /ecommerce/product/_bulk
+{"delete":{"_id":1}}
+{"update":{"_id":1002}}
+{"doc":{"quantity":10}}
+
+GET /ecommerce/product/1002
+
+GET /ecommerce/product
+{
+  "query":{
+  "match_all":{}
+  }
+}
+
+GET /ecommerce/product/_search?q=*
+
+DELETE /ecommerce

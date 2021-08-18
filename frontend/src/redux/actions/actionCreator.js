@@ -1,4 +1,4 @@
-import { fetchAllArticlesOfUser, fetchAllSourcesDB, fetchSourcesToSubscribe } from "../../articles/helper/articlehelper"
+import { fetchAllArticlesOfUser, fetchAllSourcesDB, fetchSourcesToSubscribe, searchArticlesOfUser } from "../../articles/helper/articlehelper"
 import { profile } from "../../users/helper/userhelper"
 import ACTIONS from "./actionsList"
 
@@ -49,26 +49,49 @@ export const fetchUserDetails = data => {
     }
 }
 
-export const fetchArticlesFromServer = () => {
-    return dispatch => {
-        fetchAllArticlesOfUser().then(async articles => {
-            let a = await articles.json();
-            if (a.status === 'error') {
-                dispatch(errorFlag(true));
-                dispatch(fetchErrorMessage(a.message));
-            }
-            else {
-                dispatch(fetchErrorMessage(''));
-                dispatch(fetchSuccessMessage(''));
-                dispatch(fetchArticles(a.result));
+export const fetchArticlesFromServer = (query) => {
+    if (!query) {
+        return dispatch => {
+            fetchAllArticlesOfUser().then(async articles => {
+                let a = await articles.json();
+                if (a.status === 'error') {
+                    dispatch(fetchErrorMessage(a.message));
+                }
+                else {
+                    dispatch(fetchErrorMessage(''));
+                    dispatch(fetchSuccessMessage(''));
+                    dispatch(fetchArticles(a.result));
 
+                }
+            }).catch(err => {
+                dispatch(fetchErrorMessage(err.message));
             }
-        }).catch(err => {
-            dispatch(fetchErrorMessage(err.message));
+            )
+
         }
-        )
-
     }
+    else {
+        return dispatch => {
+            searchArticlesOfUser(query).then(async articles => {
+                let a = await articles.json();
+                if (a.status === 'error') {
+                    dispatch(fetchErrorMessage(a.message));
+                    dispatch(fetchArticles([]));
+                }
+                else {
+                    dispatch(fetchErrorMessage(''));
+                    dispatch(fetchSuccessMessage(''));
+                    dispatch(fetchArticles(a.result));
+
+                }
+            }).catch(err => {
+                dispatch(fetchErrorMessage(err.message));
+            }
+            )
+
+        }
+    }
+
 }
 
 export const profileFromServer = () => {

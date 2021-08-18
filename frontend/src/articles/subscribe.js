@@ -29,7 +29,7 @@ const Subscribe = () => {
     }, [isSubmitEnabled])
 
     const handleChange = (name) => (event) => {
-        console.log('handle');
+
         setValues({ ...values, [name]: event.target.value })
     }
     const { feedUrl } = values
@@ -39,7 +39,6 @@ const Subscribe = () => {
         } catch (err) {
 
         }
-        console.log('value', values);
         subscribe(values).then(async res => {
             let response = await res.json()
             if (response.status === 'error') {
@@ -60,12 +59,10 @@ const Subscribe = () => {
             }
 
         }).catch(err => {
-            console.log(err, 'errorrr');
             dispatch(fetchErrorMessage(err.message));
         })
     }
     const subscribebtn = (source_id, feedUrl, event) => {
-        console.log(sources);
         setValues({ ...values, source_id: source_id, feedUrl: feedUrl })
         setIsSubmitEnabled(true)
     }

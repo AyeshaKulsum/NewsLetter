@@ -7,6 +7,7 @@ let parser = new Parser();
 var crypto = require('crypto');
 const Source = require('../model/source');
 const Article = require('../model/article');
+const { queryToAddToES } = require('./articles');
 
 
 
@@ -19,6 +20,7 @@ const createHash = string => {
 
 exports.updateArticlesJob = async (request) => {
     try {
+        let articlesToES = []
         let sources = await Source.findAll();
         sources.forEach(async source => {
             let prevHash = source.Hash;
@@ -43,7 +45,21 @@ exports.updateArticlesJob = async (request) => {
                                                 Title: element.title, Link: element.link, PubDate: element.pubDate, Author: element.author, Content: element.content,
                                                 ContentSnippet: element.contentSnippet, source_id: source.id
                                             }
-                                            ).then(a => {
+                                            ).then(data => {
+                                                let article = {
+                                                    "id": data.id,
+                                                    "Title": source.Title,
+                                                    "Link": data.Link,
+                                                    "Author": data.Author,
+                                                    "Content": data.Content,
+                                                    "ContentSnippet": data.ContentSnippet,
+                                                    "Categories": data.Categories,
+                                                    "PubDate": data.PubDate,
+                                                    "source_id": source.id,
+                                                    "article_title": data.Title,
+                                                    "FeedUrl": source.FeedUrl
+                                                };
+                                                articlesToES.push(article);
                                             })
                                         }
 
@@ -56,9 +72,9 @@ exports.updateArticlesJob = async (request) => {
 
             }
         });
+        queryToAddToES('rss', 'articles', articlesToES);
     }
     catch (err) {
-        console.log("error", err)
         return { message: 'Cron Job failed', err, status: 'error' }
 
     }
