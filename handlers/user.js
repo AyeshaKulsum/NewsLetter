@@ -4,6 +4,7 @@ const { subscribeHelper, unsubscribeHelper, profileHelper } = require('../helper
 
 const Session = require('../model/session');
 const { uuid } = require('uuidv4');
+const User = require('../model/user');
 exports.signup = async (request, reply) => {
     try {
         let signup = await signupHelper(request);
@@ -22,9 +23,34 @@ exports.signup = async (request, reply) => {
     }
 }
 
-const sessionHelper = async (request, reply, id, path) => {
+exports.googleAuth = async (request, reply) => {
+    if (request.auth.isAuthenticated) {
+        const user = request.auth.credentials.profile
+        let userDB = await User.findOne({
+            where: {
+                email: user.email
+            }
+        })
+        if (userDB) {
+            sessionHelper(request, reply, userDB.id, '/', request.auth.credentials.token);
+        }
+        else {
+            User.create({ userName: user.displayName, email: user.email, password: 'GOOGLE_LOGIN', strategy: 'google' }).then(authData => {
+                sessionHelper(request, reply, authData.id, '/', request.auth.credentials.token);
+            })
+        }
+    }
+    else {
+        reply.view('login', {
+            "status": "error",
+            'message': "There was an issue with the Google authentication."
+        }).code(400)
+    }
+}
+
+const sessionHelper = async (request, reply, id, path, token) => {
     Session.create({
-        access_token: uuid(),
+        access_token: token ? token : uuid(),
         user_id: id
     }).then(session_data => {
         const data = {

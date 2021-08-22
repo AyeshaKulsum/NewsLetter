@@ -1,4 +1,4 @@
-const { signup, login, logout, subscribe, unsubscribe, profile } = require('../handlers/user')
+const { signup, login, logout, subscribe, unsubscribe, profile, googleAuth } = require('../handlers/user')
 const { signupValidation, loginValidation, subscribeValidation, unsubscribeValidation } = require('../validations/articles')
 
 
@@ -147,6 +147,17 @@ const userRoute = [
             description: 'Subscribe'
         }
     },
+
+    {
+        method: "GET",
+        path: "/auth/google",
+        config: {
+            auth: {
+                strategy: 'google',
+            },
+            handler: googleAuth
+        }
+    }
 
 ]
 

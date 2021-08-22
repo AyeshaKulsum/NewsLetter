@@ -6,6 +6,7 @@ const userRoute = require('./routes/user')
 var server = new Hapi.Server()
 const port = process.env.PORT || 8000;
 const HapiAuthCookie = require('hapi-auth-cookie');
+//const HapiHooks = require('hapi-hooks')
 const Session = require('./model/session')
 const Vision = require('vision');
 const Bell = require('bell');
@@ -53,6 +54,7 @@ const init = async () => {
     })
     await server.register(Bell);
     await server.register(HapiAuthCookie);
+    //  await server.register(HapiHooks);
 
     server.register(Vision, (err) => {
         if (err) {
@@ -128,89 +130,6 @@ const init = async () => {
     });
 
     // tell your server about the defined routes
-    server.route({
-        method: "GET",
-        path: "/auth/google",
-        config: {
-            auth: {
-                strategy: 'google',
-            },
-            handler: async (request, reply) => {
-                if (request.auth.isAuthenticated) {
-                    const user = request.auth.credentials.profile
-                    let userDB = await User.findOne({
-                        where: {
-                            email: user.email
-                        }
-                    })
-                    if (userDB) {
-                        console.log(userDB)
-                        Session.create({
-                            access_token: request.auth.credentials.token,
-                            user_id: userDB.id
-                        }).then(session_data => {
-
-                            const data = {
-                                id: session_data.id,
-                                user_id: session_data.user_id
-                            }
-                            request.cookieAuth.set(data);
-                            reply.redirect('/').state('session', { loggedIn: true });
-                        })
-                    }
-                    else {
-                        User.create({ userName: user.displayName, email: user.email, password: 'GOOGLE_LOGIN', strategy: 'google' }).then(authData => {
-                            console.log(authData)
-                            Session.create({
-                                access_token: request.auth.credentials.token,
-                                user_id: authData.id
-                            }).then(session_data => {
-                                const data = {
-                                    id: session_data.id,
-                                    user_id: session_data.user_id
-                                }
-                                request.cookieAuth.set(data);
-                                reply.redirect('/').state('session', { loggedIn: true });
-                            })
-                        })
-                    }
-
-                    // Session.create({
-                    //     access_token:request.auth.credentials.token,
-                    //     name: user.displayName,
-                    //     username: user.username,
-                    //     avatar: user.raw.avatar_url
-                    // }).then(session_data => {
-                    //     const data = {
-                    //       id:session_data.id,
-                    //       name: user.displayName,
-                    //       username: user.username,
-                    //       avatar: user.raw.picture
-                    //     }
-                    //     request.cookieAuth.set(data);
-                    //     return reply.redirect('/').state('session',data);
-                    //     // return reply.view('index',{
-                    //     //     data,
-                    //     //     title:"MovieBase",
-                    //     //     host,
-                    //     //     port:3000
-                    //     // }).state('session',data);
-                    //     // return reply.redirect('/login/success');
-                    // }).catch(err => {
-                    //     reply.view('login', {
-                    //         error: 'There was an issue with the GitHub authentication.'
-                    //       }).code(400)
-                    // })
-
-                }
-                else {
-                    reply.view('login', {
-                        error: 'There was an issue with the GitHub authentication.'
-                    }).code(400)
-                }
-            }
-        }
-    })
     server.route(articlesRoute);
     server.route(userRoute);
 
