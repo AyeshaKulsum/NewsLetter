@@ -37,6 +37,7 @@ const SignUp = () => {
                         <input type="password" className="form-control my-2" onChange={handleChange("password")} name="password" placeholder="Please enter Password here" value={password} />
                     </div>
                     <button type="submit" className="btn btn-outline-success mb-3">Signup</button>
+                    <a className="btn btn-outline-success mb-3" href="/auth/google">SignUp with Google</a>
                 </form>
 
             </div>)

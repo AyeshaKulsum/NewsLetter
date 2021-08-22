@@ -2,7 +2,7 @@ var elasticsearch = require('elasticsearch');
 
 const elasticSearchClient = new elasticsearch.Client({
     host: 'localhost:9200',
-    // log: 'trace',
+    log: 'trace',
     apiVersion: '7.2',
 });
 
@@ -19,6 +19,7 @@ elasticSearchClient.ping({
 
 const searchES = async (indexName, type, searchQuery, sourceIds) => {
     try {
+        console.log(searchQuery);
         let results = []
         let response = await elasticSearchClient.search({
             index: indexName,
@@ -27,8 +28,12 @@ const searchES = async (indexName, type, searchQuery, sourceIds) => {
                 query: {
                     bool: {
                         must: {
-                            match_phrase: {
-                                "Content": searchQuery
+                            // match_phrase: {
+                            //     "Content": searchQuery
+                            // }
+                            multi_match: {
+                                query: searchQuery,
+                                fields: ["Content", "article_title", "Title"]
                             }
                         },
                         filter: {
@@ -51,6 +56,7 @@ const searchES = async (indexName, type, searchQuery, sourceIds) => {
         }
         return res;
     } catch (error) {
+        console.log(error);
         return { message: 'No Articles found', error, status: 'error' };
     }
 }

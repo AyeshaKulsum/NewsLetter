@@ -79,6 +79,27 @@ GET /_nodes
 
 DELETE /rss
 
+
+//multiple word search 
+GET /rss/articles/_search
+{
+      "query":{
+        "bool":{
+          "must":{
+            "multi_match" : {
+      "query":    "India continue", 
+      "fields": [ "Content", "article_title","Title" ] 
+    }
+          }, "filter":{
+    "terms": {
+      "source_id": [1,2,3]
+    }
+  }
+        }
+   
+  }
+}
+
 //ecommerce
 
 PUT /ecommerce
