@@ -8,6 +8,7 @@ var crypto = require('crypto');
 const Source = require('../model/source');
 const Article = require('../model/article');
 const { queryToAddToES } = require('./articles');
+const { ERROR } = require('../constants');
 
 
 
@@ -25,7 +26,7 @@ exports.updateArticlesJob = async (request) => {
         sources.forEach(async source => {
             let prevHash = source.Hash;
             let result = await parseRssUrl(source.FeedUrl);
-            if (result.status !== 'error') {
+            if (result.status !== ERROR) {
                 let resultString = JSON.stringify(result);
                 let hashedResult = createHash(resultString);
                 if (hashedResult !== prevHash) {
@@ -75,7 +76,7 @@ exports.updateArticlesJob = async (request) => {
         queryToAddToES('rss', 'articles', articlesToES);
     }
     catch (err) {
-        return { message: 'Cron Job failed', err, status: 'error' }
+        return { message: 'Cron Job failed', err, status: ERROR }
 
     }
 }
@@ -86,6 +87,6 @@ const parseRssUrl = async (url, lastBuildDate) => {
         return parser.parseURL(url);
     }
     catch (err) {
-        return { message: 'Unable to parse', err, status: 'error' }
+        return { message: 'Unable to parse', err, status: ERROR }
     }
 }

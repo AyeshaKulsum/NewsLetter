@@ -8,6 +8,7 @@ const User = require("../model/user");
 const client = require('../config/redis');
 var crypto = require('crypto');
 const { queryToAddToES } = require("./articles");
+const { SUCCESS, ERROR } = require("../constants");
 let parser = new Parser();
 const createHash = string => {
     var md5sum = crypto.createHash('md5');
@@ -62,7 +63,7 @@ const subscribeHelper = async (request) => {
                 let suc = await mapSourcePromise;
 
                 let subscribe = await UserSourceMapping.create({ user_id, source_id: source.id });
-                return { status: 'success', subscribe };
+                return { status: SUCCESS, subscribe };
 
             }
             else {
@@ -74,10 +75,10 @@ const subscribeHelper = async (request) => {
                 })
                 if (!subscribeExists) {
                     let subscribe = await UserSourceMapping.create({ user_id, source_id });
-                    return { status: 'success', subscribe };
+                    return { status: SUCCESS, subscribe };
                 }
                 else {
-                    return { message: 'Subscribe already exists', status: 'error' }
+                    return { message: 'Subscribe already exists', status: ERROR }
                 }
             }
 
@@ -87,7 +88,7 @@ const subscribeHelper = async (request) => {
     }
     catch (err) {
 
-        return { message: 'Unable to Subscribe', err, status: 'error' }
+        return { message: 'Unable to Subscribe', err, status: ERROR }
     }
 
 }
@@ -104,14 +105,14 @@ const unsubscribeHelper = async (request) => {
         })
         if (subscribeExists) {
             let unsubscribe = await UserSourceMapping.destroy({ where: { id: subscribeExists.id } })
-            return { status: 'success', unsubscribe };
+            return { status: SUCCESS, unsubscribe };
         }
         else {
-            return { message: 'Unable to unsubscribe', status: 'error' }
+            return { message: 'Unable to unsubscribe', status: ERROR }
         }
     }
     catch (err) {
-        return { message: 'Unable to unsubscribe', err, status: 'error' }
+        return { message: 'Unable to unsubscribe', err, status: ERROR }
     }
 
 }
@@ -139,7 +140,7 @@ const allSourcesHelper = (request) => {
         return redisPromise;
     }
     catch (err) {
-        return { message: 'No sources found', err, status: 'error' }
+        return { message: 'No sources found', err, status: ERROR }
     }
 
 }
@@ -149,14 +150,14 @@ const fetchAllSourcesPostgres = async (request) => {
 
         const result = await Source.findAll({ attributes: [['id', 'source_id'], 'FeedUrl', 'Title', 'Link'] });
         let response = {
-            status: 'success',
+            status: SUCCESS,
             result
         }
         client.setex("FETCH_ALL_SOURCES", 3800, JSON.stringify(response));
         return response;
     }
     catch (err) {
-        return { message: 'No sources found', err, status: 'error' }
+        return { message: 'No sources found', err, status: ERROR }
     }
 }
 
@@ -173,13 +174,13 @@ const sourcesToSubscribeHelper = async (request) => {
         sourceids.push(-1)
         const result = await Source.findAll({ where: { [Op.not]: { id: sourceids } }, attributes: [['id', 'source_id'], 'FeedUrl', 'Title', 'Link'] })
         let response = {
-            status: 'success',
+            status: SUCCESS,
             result
         }
         return response;
     }
     catch (err) {
-        return { message: 'No sources found', err, status: 'error' }
+        return { message: 'No sources found', err, status: ERROR }
     }
 }
 
@@ -212,13 +213,13 @@ const profileHelper = async (request) => {
             subscribedSources
         }
         let response = {
-            status: 'success',
+            status: SUCCESS,
             result
         }
         return response;
     }
     catch (err) {
-        return { message: '', err, status: 'error' }
+        return { message: '', err, status: ERROR }
     }
 }
 
@@ -234,13 +235,13 @@ const fetchOneArticleHelper = async (source_id) => {
             }]
         })
         let response = {
-            status: 'success',
+            status: SUCCESS,
             result
         }
         return response;
     }
     catch (err) {
-        return { message: 'Source not found', err, status: 'error' }
+        return { message: 'Source not found', err, status: ERROR }
     }
 }
 

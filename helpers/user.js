@@ -5,6 +5,7 @@ const Article = require("../model/article");
 const { Op, Sequelize } = require("sequelize");
 const UserSourceMapping = require("../model/usersourcemapping");
 const Source = require("../model/source");
+const { ERROR, SUCCESS } = require("../constants");
 
 
 const logoutHelper = async (request) => {
@@ -22,7 +23,7 @@ const logoutHelper = async (request) => {
     }
     catch (err) {
 
-        return { message: '', err, status: 'error' }
+        return { message: 'Failed to logout', err, status: ERROR }
     }
 }
 
@@ -39,7 +40,7 @@ const signupHelper = async (request) => {
                 id: user.id
             }
             let response = {
-                status: 'success',
+                status: SUCCESS,
                 result
             }
             return response;
@@ -48,7 +49,7 @@ const signupHelper = async (request) => {
     }
     catch (err) {
 
-        return { message: 'Unable to Sign up', err, status: 'error' }
+        return { message: 'Unable to Sign up', err, status: ERROR }
     }
 
 }
@@ -71,7 +72,7 @@ const googleAuthHelper = async (request) => {
 
             }
             let response = {
-                status: 'success',
+                status: SUCCESS,
                 result,
                 token: request.auth.credentials.token
             }
@@ -82,7 +83,7 @@ const googleAuthHelper = async (request) => {
     }
     catch (err) {
         console.log(err);
-        return { message: 'Unable to do Google Authentication', err, status: 'error' }
+        return { message: 'Unable to do Google Authentication', err, status: ERROR }
     }
 
 }
@@ -99,7 +100,7 @@ const loginHelper = async (request) => {
         console.log(user);
         if (user && user.validPassword(password)) {
             if (user.strategy === 'google') {
-                return { message: 'Google Auth failed', status: 'error' }
+                return { message: 'Google Auth failed', status: ERROR }
             }
             let result = {
                 email: user.email,
@@ -107,7 +108,7 @@ const loginHelper = async (request) => {
                 id: user.id
             }
             let response = {
-                status: 'success',
+                status: SUCCESS,
                 result
             }
             return response;
@@ -116,7 +117,7 @@ const loginHelper = async (request) => {
     }
     catch (err) {
 
-        return { message: 'Unable to login', err, status: 'error' }
+        return { message: 'Unable to login', err, status: ERROR }
     }
 }
 
@@ -145,13 +146,13 @@ const fetchArticleseHelper = async (request) => {
         })
 
         let response = {
-            status: 'success',
+            status: SUCCESS,
             result
         }
         return response;
     }
     catch (err) {
-        return { message: 'No articles found', err, status: 'error' }
+        return { message: 'No articles found', err, status: ERROR }
     }
 }
 module.exports = { signupHelper, loginHelper, logoutHelper, fetchArticleseHelper, googleAuthHelper }

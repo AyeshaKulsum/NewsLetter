@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 import Base from "../Base"
-import { fetchArticlesFromServer, fetchErrorMessage, fetchSourcesToSubscribeFromServer } from "../redux/actions/actionCreator"
+import { fetchErrorMessage, fetchSourcesToSubscribeFromServer } from "../redux/actions/actionCreator"
 import { subscribe } from "./helper/articlehelper"
+import { ERROR } from "../../../constants"
 
 
 const Subscribe = () => {
@@ -41,21 +42,12 @@ const Subscribe = () => {
         }
         subscribe(values).then(async res => {
             let response = await res.json()
-            if (response.status === 'error') {
+            if (response.status === ERROR) {
                 dispatch(fetchErrorMessage(response.message));
             }
             else {
                 dispatch(fetchSourcesToSubscribeFromServer())
-                // let s_id = values.source_id;
-                // let newSources = [...sources];
-                // newSources.forEach((s, i) => {
-                //     if (s.source_id === s_id) {
-                //         newSources.splice(i, 1)
-                //     }
-                // })
                 dispatch(fetchSourcesToSubscribe())
-                // setSources([...newSources])
-                // history.push('/user-subscribe')
             }
 
         }).catch(err => {

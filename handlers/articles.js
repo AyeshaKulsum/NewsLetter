@@ -1,3 +1,4 @@
+const { ERROR } = require('../constants');
 const { searchArticleseHelper } = require('../helpers/articles');
 const { fetchArticleseHelper } = require('../helpers/user');
 const { sourcesToSubscribeHelper, fetchOneArticleHelper, allSourcesHelper } = require('../helpers/usersourcemapping');
@@ -8,7 +9,7 @@ exports.fetchAllArticles = async (request, reply) => {
         reply(articles)
     }
     catch (err) {
-        reply({ message: 'No Articles found', err, status: 'error' }).code(500)
+        reply({ message: 'No Articles found', err, status: ERROR }).code(500)
     }
 }
 exports.searchArticles = async (request, reply) => {
@@ -17,7 +18,7 @@ exports.searchArticles = async (request, reply) => {
         reply(articles)
     }
     catch (err) {
-        reply({ message: 'No Articles found', err, status: 'error' }).code(500)
+        reply({ message: 'No Articles found', err, status: ERROR }).code(500)
     }
 }
 exports.sourcesToSubscribe = async (request, reply) => {
@@ -26,7 +27,7 @@ exports.sourcesToSubscribe = async (request, reply) => {
         reply(sources)
     }
     catch (err) {
-        reply({ message: 'No Sources found', err, status: 'error' }).code(500)
+        reply({ message: 'No Sources found', err, status: ERROR }).code(500)
     }
 }
 
@@ -36,7 +37,7 @@ exports.allSources = async (request, reply) => {
         reply(sources)
     }
     catch (err) {
-        reply({ message: 'No Sources found', err, status: 'error' }).code(500)
+        reply({ message: 'No Sources found', err, status: ERROR }).code(500)
     }
 }
 
@@ -46,6 +47,6 @@ exports.fetchOneArticles = async (request, reply) => {
         reply(articles)
     }
     catch (err) {
-        reply({ message: 'No Articles found', err, status: 'error' }).code(500)
+        reply({ message: 'No Articles found', err, status: ERROR }).code(500)
     }
 }

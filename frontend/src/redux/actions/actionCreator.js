@@ -54,7 +54,7 @@ export const fetchArticlesFromServer = (query) => {
         return dispatch => {
             fetchAllArticlesOfUser().then(async articles => {
                 let a = await articles.json();
-                if (a.status === 'error') {
+                if (a.status === ERROR) {
                     dispatch(fetchErrorMessage(a.message));
                 }
                 else {
@@ -74,7 +74,7 @@ export const fetchArticlesFromServer = (query) => {
         return dispatch => {
             searchArticlesOfUser(query).then(async articles => {
                 let a = await articles.json();
-                if (a.status === 'error') {
+                if (a.status === ERROR) {
                     dispatch(fetchErrorMessage(a.message));
                     dispatch(fetchArticles([]));
                 }
@@ -98,7 +98,7 @@ export const profileFromServer = () => {
     return dispatch => {
         profile().then(async response => {
             let result = await response.json();
-            if (result.status === 'error') {
+            if (result.status === ERROR) {
                 dispatch(fetchErrorMessage(result.message));
             }
             else {
@@ -131,7 +131,7 @@ export const fetchSourcesToSubscribeFromServer = () => {
     return dispatch => {
         fetchSourcesToSubscribe().then(async sources => {
             let s = await sources.json();
-            if (s.status === 'error') {
+            if (s.status === ERROR) {
                 dispatch(fetchErrorMessage(s.message));
             }
             else {
@@ -152,7 +152,7 @@ export const fetchAllSourcesFromServer = () => {
     return dispatch => {
         fetchAllSourcesDB().then(async sources => {
             let s = await sources.json();
-            if (s.status === 'error') {
+            if (s.status === ERROR) {
                 dispatch(fetchErrorMessage(s.message));
             }
             else {

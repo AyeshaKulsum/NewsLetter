@@ -1,9 +1,6 @@
 const { addToES, searchES } = require('../config/elasticsearch');
+const { ERROR } = require('../constants');
 const UserSourceMapping = require('../model/usersourcemapping');
-const articleIndexName = "articles";
-const articleProperties = {
-
-}
 
 const queryToAddToES = async (indexName, type, articles) => {
     try {
@@ -21,7 +18,7 @@ const queryToAddToES = async (indexName, type, articles) => {
         }
     }
     catch (err) {
-        return { message: 'Unable to add to elasticsearch', err, status: 'error' }
+        return { message: 'Unable to add to elasticsearch', err, status: ERROR }
     }
 }
 
@@ -40,7 +37,7 @@ const searchArticleseHelper = async (request) => {
         return result;
     }
     catch (err) {
-        return { message: 'No articles found', err, status: 'error' }
+        return { message: 'No articles found', err, status: ERROR }
     }
 }
 

@@ -1,7 +1,8 @@
 var elasticsearch = require('elasticsearch');
+const { ERROR, SUCCESS } = require('../constants');
 
 const elasticSearchClient = new elasticsearch.Client({
-    host: 'localhost:9200',
+    host: process.env.ELASTICHOST,
     // log: 'trace',
     apiVersion: '7.2',
 });
@@ -47,12 +48,12 @@ const searchES = async (indexName, type, searchQuery, sourceIds) => {
             results.push(article._source);
         });
         let res = {
-            status: 'success',
+            status: SUCCESS,
             result: results
         }
         return res;
     } catch (error) {
-        return { message: 'No Articles found', error, status: 'error' };
+        return { message: 'No Articles found', error, status: ERROR };
     }
 }
 
@@ -65,38 +66,13 @@ const addToES = (indexName, type, data) => {
             body: data
         }, function (err, resp) {
             if (resp) {
-                // console.log( resp);
             }
-            // if (resp.errors) {
-            //     console.log(JSON.stringify(resp, null, '\t'));
-            // }
             if (err) {
-                // console.log(err);
             }
         });
     } catch (error) {
-        return { message: 'Unable to add to Elastic search', error, status: 'error' };
+        return { message: 'Unable to add to Elastic search', error, status: ERROR };
     }
 }
-
-// const initializeIndex = async (indexName, properties) => {
-//     try {
-//         await elasticsearchClient.indices.get({
-//             index: indexName
-//         });
-//         logger.info(`index "${indexName}" already created`);
-//     } catch (e) {
-//         logger.warn(`index "${indexName}" is missing. creating...`);
-//         await elasticsearchClient.indices.create({
-//             index: indexName,
-//             body: {
-//                 "mappings": {
-//                     "properties": properties
-//                 }
-//             }
-//         });
-//         logger.info(`index "${indexName}" created`);
-//     }
-// }
 
 module.exports = { elasticSearchClient, addToES, searchES }

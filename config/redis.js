@@ -1,7 +1,9 @@
 const redis = require("redis");
+const { ERROR } = require("../constants");
+
 const client = redis.createClient(console.log('Redis is connected'));
 
-client.on("error", function (error) {
+client.on(ERROR, function (error) {
     console.error(error);
 });
 
