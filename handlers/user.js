@@ -1,5 +1,5 @@
 
-const { signupHelper, loginHelper, logoutHelper } = require('../helpers/user');
+const { signupHelper, loginHelper, logoutHelper, googleAuthHelper } = require('../helpers/user');
 const { subscribeHelper, unsubscribeHelper, profileHelper } = require('../helpers/usersourcemapping');
 
 const Session = require('../model/session');
@@ -24,27 +24,22 @@ exports.signup = async (request, reply) => {
 }
 
 exports.googleAuth = async (request, reply) => {
-    if (request.auth.isAuthenticated) {
-        const user = request.auth.credentials.profile
-        let userDB = await User.findOne({
-            where: {
-                email: user.email
-            }
-        })
-        if (userDB) {
-            sessionHelper(request, reply, userDB.id, '/', request.auth.credentials.token);
+    try {
+        let googleAuth = await googleAuthHelper(request);
+        console.log('rs', googleAuth);
+        if (googleAuth && googleAuth.status === 'success') {
+            sessionHelper(request, reply, googleAuth.result.id, '/', googleAuth.token);
+        } else {
+            reply.view('login', {
+                "status": "error",
+                'message': "There was an issue with the Google authentication."
+            }).code(400)
         }
-        else {
-            User.create({ userName: user.displayName, email: user.email, password: 'GOOGLE_LOGIN', strategy: 'google' }).then(authData => {
-                sessionHelper(request, reply, authData.id, '/', request.auth.credentials.token);
-            })
-        }
+
     }
-    else {
-        reply.view('login', {
-            "status": "error",
-            'message': "There was an issue with the Google authentication."
-        }).code(400)
+    catch (err) {
+        console.log(err);
+        reply({ message: 'Unable to Google Authentication', err, status: 'error' }).code(500)
     }
 }
 
@@ -65,12 +60,13 @@ const sessionHelper = async (request, reply, id, path, token) => {
 exports.login = async (request, reply) => {
     try {
         let login = await loginHelper(request);
+        console.log(login, 'login');
         if (login && login.status === 'success') {
             sessionHelper(request, reply, login.result.id, '/');
         } else {
             reply({
                 "status": "error",
-                'message': "Internal Error"
+                "message": "Unable to login"
             }).code(500)
         }
 

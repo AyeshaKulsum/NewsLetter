@@ -121,7 +121,7 @@ const init = async () => {
     // ON PREAUTH 
     server.ext('onPostAuth', function (request, reply) {
         console.log(`onPostAuth:${request.method.toUpperCase()}:${request.path}/${request.params}`)
-        if (request.path === '/login' || request.path === '/signup' || request.auth.isAuthenticated) {
+        if (request.path === '/auth/google' || request.path === '/login' || request.path === '/signup' || request.auth.isAuthenticated) {
             return reply.continue();
         } else {
             console.log(false)

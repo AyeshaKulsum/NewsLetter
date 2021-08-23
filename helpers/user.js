@@ -6,6 +6,7 @@ const { Op, Sequelize } = require("sequelize");
 const UserSourceMapping = require("../model/usersourcemapping");
 const Source = require("../model/source");
 
+
 const logoutHelper = async (request) => {
     try {
         let { id } = request.auth.credentials;
@@ -28,7 +29,7 @@ const logoutHelper = async (request) => {
 
 const signupHelper = async (request) => {
     try {
-        const { userName, email, password } = request.payload
+        const { userName, email, password } = request.payload;
         let user = await User.create({ userName, email, password, strategy: 'app' })
 
         if (user !== null) {
@@ -52,24 +53,59 @@ const signupHelper = async (request) => {
 
 }
 
+const googleAuthHelper = async (request) => {
+    try {
+        let result = null;
+        if (request.auth.isAuthenticated) {
+            const user = request.auth.credentials.profile
+            result = await User.findOne({
+                where: {
+                    email: user.email
+                }
+            })
+            console.log('res2', result);
+            if (!result) {
 
+                result = await User.create({ userName: user.displayName, email: user.email, password: 'GOOGLE_LOGIN', strategy: 'google' })
+                console.log('res266788', result);
 
+            }
+            let response = {
+                status: 'success',
+                result,
+                token: request.auth.credentials.token
+            }
+            return response;
+        }
+        return null;
+
+    }
+    catch (err) {
+        console.log(err);
+        return { message: 'Unable to do Google Authentication', err, status: 'error' }
+    }
+
+}
 
 const loginHelper = async (request) => {
     try {
         const { email, password } = request.payload;
+
         const user = await User.findOne({
             where: {
-                email,
-                password
+                email
             }
         })
-        let result = {
-            email: user.email,
-            userName: user.userName,
-            id: user.id
-        }
-        if (user !== null) {
+        console.log(user);
+        if (user && user.validPassword(password)) {
+            if (user.strategy === 'google') {
+                return { message: 'Google Auth failed', status: 'error' }
+            }
+            let result = {
+                email: user.email,
+                userName: user.userName,
+                id: user.id
+            }
             let response = {
                 status: 'success',
                 result
@@ -80,12 +116,8 @@ const loginHelper = async (request) => {
     }
     catch (err) {
 
-        return { message: '', err, status: 'error' }
+        return { message: 'Unable to login', err, status: 'error' }
     }
-
-
-
-
 }
 
 const fetchArticleseHelper = async (request) => {
@@ -122,4 +154,4 @@ const fetchArticleseHelper = async (request) => {
         return { message: 'No articles found', err, status: 'error' }
     }
 }
-module.exports = { signupHelper, loginHelper, logoutHelper, fetchArticleseHelper }
+module.exports = { signupHelper, loginHelper, logoutHelper, fetchArticleseHelper, googleAuthHelper }

@@ -1,27 +1,15 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-
+import { useState } from "react";
 import Base from "../Base";
-import { fetchErrorMessage, loginSuccess } from "../redux/actions/actionCreator";
-import { signup } from "./helper/userhelper"
 
 
 const SignUp = () => {
     const [values, setValues] = useState({ email: '', password: '', userName: '' })
-    const history = useHistory()
+
     const handleChange = (name) => (event) => {
         setValues({ ...values, [name]: event.target.value })
     }
-    const dispatch = useDispatch();
+
     const { email, password, userName } = values
-    const onSubmit = (event) => {
-        event.preventDefault();
-        // signup(values).then(response => {
-        //     history.push("/login")
-        // }).catch(err => { dispatch(fetchErrorMessage(err.message)); })
-        return true;
-    }
     const signupForm = () => {
         return (
             <div className="container">

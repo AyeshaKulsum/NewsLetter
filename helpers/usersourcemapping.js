@@ -66,26 +66,12 @@ const subscribeHelper = async (request) => {
 
             }
             else {
-
                 source_id = source.id
                 let subscribeExists = await UserSourceMapping.findOne({
                     where: {
                         user_id, source_id
                     }
                 })
-                // let a = [{
-                //     "id": 222,
-                //     "Title": "ABC",
-                //     "Link": "http",
-                //     "Author": "auth",
-                //     "Content": "content",
-                //     "ContentSnippet": "cont snip",
-                //     "Categories": "dd",
-                //     "PubDate": "date",
-                //     "source_id": 1
-                // }]
-                // //await fetchOneArticleHelper(source.source_id);
-                // await queryToAddToES('rss', 'articles', a);
                 if (!subscribeExists) {
                     let subscribe = await UserSourceMapping.create({ user_id, source_id });
                     return { status: 'success', subscribe };

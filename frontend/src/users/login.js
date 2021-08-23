@@ -8,7 +8,6 @@ import { login } from "./helper/userhelper";
 
 
 const Login = () => {
-    //const [user, setUser] = useState({ email: 'd@gmail.com', password: '1234' })
     const [values, setValues] = useState({ email: '', password: '' })
     const history = useHistory()
     const handleChange = (name) => (event) => {
@@ -20,14 +19,21 @@ const Login = () => {
     const onSubmit = (event) => {
         event.preventDefault();
         login(values).then(async response => {
-            dispatch(loginSuccess());
-            history.push("/")
-        }).catch(err => {
+            console.log(response);
+            if (response.status === 500) {
+                let a = await response.json();
+                console.log('res', a);
+                dispatch(fetchErrorMessage(a.message));
+            }
+            else {
+                dispatch(loginSuccess());
+                history.push("/")
+            }
 
-            dispatch(fetchErrorMessage(err.message));
+        }).catch(err => {
+            dispatch(fetchErrorMessage('Unable to login'));
         })
     }
-    // JSON.parse(atob(document.cookie.split("=")[1]))
     const loginForm = () => {
         return (
             <div className="container">
