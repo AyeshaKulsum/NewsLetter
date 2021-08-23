@@ -30,21 +30,11 @@ const Article = db.define('Article', {
         type: Sequelize.TEXT,
         allowNull: true
     }
-    // ,
-    // Guid: {
-    //     type: Sequelize.STRING,
-    //     allowNull: false
-    // }
     ,
     PubDate: {
         type: Sequelize.DATEONLY,
         allowNull: true
     }
-    // ,
-    // IsoDate: {
-    //     type: Sequelize.DATE,
-    //     allowNull: false
-    // }
 }, {
     paranoid: true
 }
