@@ -8,13 +8,34 @@ const User = require("../model/user");
 const client = require('../config/redis');
 var crypto = require('crypto');
 const { queryToAddToES } = require("./articles");
-const { SUCCESS, ERROR } = require("../constants");
+const { SUCCESS, ERROR, FETCH_ALL_SOURCES } = require("../constants");
+const { searchES } = require("../config/elasticsearch");
 let parser = new Parser();
 const createHash = string => {
     var md5sum = crypto.createHash('md5');
     md5sum.update(JSON.stringify(string));
     return md5sum.digest('hex');
 }
+
+const searchArticleseHelper = async (request) => {
+    try {
+        const { user_id } = request.auth.credentials
+        const { query } = JSON.parse(request.payload);
+        let sourceids = [... (await UserSourceMapping.findAll({
+            where: {
+                user_id
+            },
+            raw: true,
+            attributes: ['source_id']
+        }))].map(sources => sources.source_id);
+        let result = await searchES('rss', 'articles', query, sourceids);
+        return result;
+    }
+    catch (err) {
+        return { message: 'No articles found', err, status: ERROR }
+    }
+}
+
 const subscribeHelper = async (request) => {
     try {
         let { source_id, feedUrl } = request.payload
@@ -121,7 +142,7 @@ const allSourcesHelper = (request) => {
     let sources = null;
     try {
         let redisPromise = new Promise((resolve, reject) => {
-            client.get(`FETCH_ALL_SOURCES`, (err, value) => {
+            client.get(FETCH_ALL_SOURCES, (err, value) => {
                 if (err) throw err;
                 if (value) {
                     console.log('Data from Redis', JSON.parse(value));
@@ -153,7 +174,7 @@ const fetchAllSourcesPostgres = async (request) => {
             status: SUCCESS,
             result
         }
-        client.setex("FETCH_ALL_SOURCES", 3800, JSON.stringify(response));
+        client.setex(FETCH_ALL_SOURCES, 3800, JSON.stringify(response));
         return response;
     }
     catch (err) {
@@ -219,7 +240,7 @@ const profileHelper = async (request) => {
         return response;
     }
     catch (err) {
-        return { message: '', err, status: ERROR }
+        return { message: 'Unable to fetch profile details', err, status: ERROR }
     }
 }
 
@@ -245,4 +266,4 @@ const fetchOneArticleHelper = async (source_id) => {
     }
 }
 
-module.exports = { unsubscribeHelper, subscribeHelper, sourcesToSubscribeHelper, profileHelper, fetchOneArticleHelper, allSourcesHelper }
+module.exports = { searchArticleseHelper, unsubscribeHelper, subscribeHelper, sourcesToSubscribeHelper, profileHelper, fetchOneArticleHelper, allSourcesHelper }

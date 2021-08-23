@@ -6,7 +6,6 @@ const userRoute = require('./routes/user')
 var server = new Hapi.Server()
 const port = process.env.PORT || 8000;
 const HapiAuthCookie = require('hapi-auth-cookie');
-//const HapiHooks = require('hapi-hooks')
 const Session = require('./model/session')
 const Vision = require('vision');
 const Bell = require('bell');
@@ -21,6 +20,7 @@ const { elasticSearchClient } = require('./config/elasticsearch')
 //DB
 const db = require('./config/database');
 const { sessionHelper } = require('./handlers/user');
+const sourcesRoute = require('./routes/sources');
 db.authenticate().then(() =>
     console.log('DB Connection has been established successfully.'))
     .catch(err => console.error('Unable to connect to the database:', err))
@@ -54,7 +54,6 @@ const init = async () => {
     })
     await server.register(Bell);
     await server.register(HapiAuthCookie);
-    //  await server.register(HapiHooks);
 
     server.register(Vision, (err) => {
         if (err) {
@@ -69,18 +68,16 @@ const init = async () => {
     });
 
     server.auth.strategy('google', 'bell', {
-        provider: 'google',
-        password: 'A4BIqfMdODISkn8A70EQle2QQv4Obd2bf',
+        provider: process.env.PROVIDER_GOOGLE,
+        password: process.env.GOOGLE_PASSWORD,
         isSecure: false,
-        clientId: '1003676096517-48uaitqidv5dc71vbh94e6sbetdi63cq.apps.googleusercontent.com',
-        clientSecret: 'mqoY2keZMmNhzIJtvQbnSLXt',
-        location: 'http://localhost:8001'
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        location: process.env.GOOGLE_LOCATION
     });
 
-
-
     server.auth.strategy('session', 'cookie', {
-        password: 'A4BIqfMdODISkn8A70EQle2QQv4Obd2bf',
+        password: process.env.COOKIE_PASSWORD,
         redirectTo: '/',
         isSecure: false,
         isSameSite: 'Lax',
@@ -132,6 +129,7 @@ const init = async () => {
     // tell your server about the defined routes
     server.route(articlesRoute);
     server.route(userRoute);
+    server.route(sourcesRoute);
 
     // start your server
     server.start(function (err) {

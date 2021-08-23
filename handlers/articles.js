@@ -1,7 +1,6 @@
-const { ERROR } = require('../constants');
-const { searchArticleseHelper } = require('../helpers/articles');
-const { fetchArticleseHelper } = require('../helpers/user');
-const { sourcesToSubscribeHelper, fetchOneArticleHelper, allSourcesHelper } = require('../helpers/usersourcemapping');
+const { ERROR, INTERNAL_SERVER_ERROR_CODE } = require('../constants');
+const { fetchArticleseHelper } = require('../helpers/articles');
+const { sourcesToSubscribeHelper, fetchOneArticleHelper, allSourcesHelper, searchArticleseHelper } = require('../helpers/sources');
 
 exports.fetchAllArticles = async (request, reply) => {
     try {
@@ -9,7 +8,7 @@ exports.fetchAllArticles = async (request, reply) => {
         reply(articles)
     }
     catch (err) {
-        reply({ message: 'No Articles found', err, status: ERROR }).code(500)
+        reply({ message: 'No Articles found', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 exports.searchArticles = async (request, reply) => {
@@ -18,7 +17,7 @@ exports.searchArticles = async (request, reply) => {
         reply(articles)
     }
     catch (err) {
-        reply({ message: 'No Articles found', err, status: ERROR }).code(500)
+        reply({ message: 'No Articles found', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 exports.sourcesToSubscribe = async (request, reply) => {
@@ -27,7 +26,7 @@ exports.sourcesToSubscribe = async (request, reply) => {
         reply(sources)
     }
     catch (err) {
-        reply({ message: 'No Sources found', err, status: ERROR }).code(500)
+        reply({ message: 'No Sources found', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -37,7 +36,7 @@ exports.allSources = async (request, reply) => {
         reply(sources)
     }
     catch (err) {
-        reply({ message: 'No Sources found', err, status: ERROR }).code(500)
+        reply({ message: 'No Sources found', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -47,6 +46,6 @@ exports.fetchOneArticles = async (request, reply) => {
         reply(articles)
     }
     catch (err) {
-        reply({ message: 'No Articles found', err, status: ERROR }).code(500)
+        reply({ message: 'No Articles found', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }

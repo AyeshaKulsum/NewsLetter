@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom"
 import Base from "../Base"
 import { fetchErrorMessage, fetchSourcesToSubscribeFromServer } from "../redux/actions/actionCreator"
 import { subscribe } from "./helper/articlehelper"
-import { ERROR } from "../../../constants"
 
 
 const Subscribe = () => {
@@ -42,7 +41,7 @@ const Subscribe = () => {
         }
         subscribe(values).then(async res => {
             let response = await res.json()
-            if (response.status === ERROR) {
+            if (response.status === 'error') {
                 dispatch(fetchErrorMessage(response.message));
             }
             else {

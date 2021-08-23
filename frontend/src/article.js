@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { ERROR } from "../../constants"
 import { fetchArticlesBySourceId } from "./articles/helper/articlehelper"
 import Base from "./Base"
 import { fetchErrorMessage, fetchSuccessMessage } from "./redux/actions/actionCreator"
@@ -14,7 +13,7 @@ const Article = ({ match }) => {
     useEffect(() => {
         fetchArticlesBySourceId(match.params.source_id).then(async response => {
             let a = await response.json();
-            if (a.status === ERROR) {
+            if (a.status === 'error') {
                 dispatch(fetchErrorMessage(s.message));
             }
             else {

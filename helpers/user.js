@@ -1,10 +1,5 @@
 const User = require("../model/user");
-
 const Session = require("../model/session");
-const Article = require("../model/article");
-const { Op, Sequelize } = require("sequelize");
-const UserSourceMapping = require("../model/usersourcemapping");
-const Source = require("../model/source");
 const { ERROR, SUCCESS } = require("../constants");
 
 
@@ -121,38 +116,5 @@ const loginHelper = async (request) => {
     }
 }
 
-const fetchArticleseHelper = async (request) => {
-    try {
-        const { user_id } = request.auth.credentials
-        let sourceids = [... (await UserSourceMapping.findAll({
-            where: {
-                user_id
-            },
-            raw: true,
-            attributes: ['source_id']
-        }))].map(sources => sources.source_id);
-        let result = await Article.findAll({
-            where: { source_id: sourceids },
-            raw: true,
-            include: [{
-                model: Source,
-                attributes: [],
-                required: true
-            }],
-            order: [['PubDate', 'DESC']],
-            attributes: ['source_id', ['Title', 'article_title'], ['Link', 'article_link'], ['Author', 'Author'], ['Content', 'Content'], ['ContentSnippet', 'ContentSnippet'], ['PubDate', 'PubDate'],
-                [Sequelize.col('Source.FeedUrl'), 'FeedUrl'], [Sequelize.col('Source.Link'), 'Link']
-                , [Sequelize.col('Source.Title'), 'Title'], [Sequelize.col('Source.LastBuildDate'), 'LastBuildDate']]
-        })
 
-        let response = {
-            status: SUCCESS,
-            result
-        }
-        return response;
-    }
-    catch (err) {
-        return { message: 'No articles found', err, status: ERROR }
-    }
-}
-module.exports = { signupHelper, loginHelper, logoutHelper, fetchArticleseHelper, googleAuthHelper }
+module.exports = { signupHelper, loginHelper, logoutHelper, googleAuthHelper }

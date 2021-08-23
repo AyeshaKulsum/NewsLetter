@@ -1,9 +1,10 @@
 
 const { signupHelper, loginHelper, logoutHelper, googleAuthHelper } = require('../helpers/user');
-const { subscribeHelper, unsubscribeHelper, profileHelper } = require('../helpers/usersourcemapping');
+const { subscribeHelper, unsubscribeHelper, profileHelper } = require('../helpers/sources');
 const Session = require('../model/session');
 const { uuid } = require('uuidv4');
-const { ERROR, SUCCESS } = require('../constants');
+const { ERROR, SUCCESS, INTERNAL_SERVER_ERROR_CODE } = require('../constants');
+
 exports.signup = async (request, reply) => {
     try {
         let signup = await signupHelper(request);
@@ -13,12 +14,12 @@ exports.signup = async (request, reply) => {
             reply({
                 "status": ERROR,
                 'message': "Internal Error"
-            }).code(500)
+            }).code(INTERNAL_SERVER_ERROR_CODE)
         }
 
     }
     catch (err) {
-        reply({ message: 'signup error', err, status: ERROR }).code(500)
+        reply({ message: 'signup error', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -38,7 +39,7 @@ exports.googleAuth = async (request, reply) => {
     }
     catch (err) {
         console.log(err);
-        reply({ message: 'Unable to Google Authentication', err, status: ERROR }).code(500)
+        reply({ message: 'Unable to Google Authentication', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -66,12 +67,12 @@ exports.login = async (request, reply) => {
             reply({
                 "status": ERROR,
                 "message": "Unable to login"
-            }).code(500)
+            }).code(INTERNAL_SERVER_ERROR_CODE)
         }
 
     }
     catch (err) {
-        reply({ message: 'Unable to login', err, status: ERROR }).code(500)
+        reply({ message: 'Unable to login', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -90,7 +91,7 @@ exports.subscribe = async (request, reply) => {
 
     }
     catch (err) {
-        reply({ message: 'subscribe error', err, status: ERROR }).code(500)
+        reply({ message: 'subscribe error', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -108,7 +109,7 @@ exports.unsubscribe = async (request, reply) => {
 
     }
     catch (err) {
-        reply({ message: 'unsubscribe error', err, status: ERROR }).code(500)
+        reply({ message: 'unsubscribe error', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -119,7 +120,7 @@ exports.profile = async (request, reply) => {
         reply(profile)
     }
     catch (err) {
-        reply({ message: 'profile error', err, status: ERROR }).code(500)
+        reply({ message: 'profile error', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
 
@@ -133,6 +134,6 @@ exports.logout = async (request, reply) => {
 
     }
     catch (err) {
-        reply({ message: 'logout error', err, status: ERROR }).code(500)
+        reply({ message: 'logout error', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }

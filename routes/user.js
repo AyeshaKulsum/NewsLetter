@@ -1,5 +1,5 @@
 const { signup, login, logout, subscribe, unsubscribe, profile, googleAuth } = require('../handlers/user')
-const { signupValidation, loginValidation, subscribeValidation, unsubscribeValidation } = require('../validations/articles')
+const { signupValidation, loginValidation, subscribeValidation, unsubscribeValidation } = require('../validations/user')
 
 
 

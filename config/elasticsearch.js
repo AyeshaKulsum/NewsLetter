@@ -4,7 +4,7 @@ const { ERROR, SUCCESS } = require('../constants');
 const elasticSearchClient = new elasticsearch.Client({
     host: process.env.ELASTICHOST,
     // log: 'trace',
-    apiVersion: '7.2',
+    apiVersion: process.env.ELASTIC_API_VERSION,
 });
 
 elasticSearchClient.ping({

@@ -10,9 +10,6 @@ const Article = require('../model/article');
 const { queryToAddToES } = require('./articles');
 const { ERROR } = require('../constants');
 
-
-
-
 const createHash = string => {
     var md5sum = crypto.createHash('md5');
     md5sum.update(JSON.stringify(string));
