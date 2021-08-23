@@ -24,8 +24,11 @@ const SignUp = () => {
                     <div className="form-group">
                         <input type="password" className="form-control my-2" onChange={handleChange("password")} name="password" placeholder="Please enter Password here" value={password} />
                     </div>
-                    <button type="submit" className="btn btn-outline-success mb-3">Signup</button>
-                    <a className="btn btn-outline-success mb-3" href="/auth/google">SignUp with Google</a>
+                    <button type="submit" className="btn btn-outline-success mb-3" style={{ marginRight: "5px" }}>Signup</button>
+                    <a className="btn btn-outline-success mb-3 ml-1" href="/auth/google" role="button">
+                        <img width="20px" style={{ marginRight: "5px", marginBottom: "3px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                        Login with Google
+                    </a>
                 </form>
 
             </div>)
