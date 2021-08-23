@@ -56,7 +56,6 @@ const fetchArticleseHelper = async (request) => {
         return response;
     }
     catch (err) {
-        console.log(err);
         return { message: 'No articles found', err, status: ERROR }
     }
 }

@@ -19,14 +19,12 @@ const Login = () => {
     const onSubmit = (event) => {
         event.preventDefault();
         login(values).then(async response => {
-            console.log(response);
             if (response.status === 200) {
                 dispatch(loginSuccess());
                 history.push("/")
             }
             else {
                 let a = await response.json();
-                console.log('res', a);
                 dispatch(fetchErrorMessage(a.message));
             }
 

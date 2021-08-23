@@ -59,12 +59,9 @@ const googleAuthHelper = async (request) => {
                     email: user.email
                 }
             })
-            console.log('res2', result);
             if (!result) {
 
                 result = await User.create({ userName: user.displayName, email: user.email, password: 'GOOGLE_LOGIN', strategy: 'google' })
-                console.log('res266788', result);
-
             }
             let response = {
                 status: SUCCESS,
@@ -77,7 +74,6 @@ const googleAuthHelper = async (request) => {
 
     }
     catch (err) {
-        console.log(err);
         return { message: 'Unable to do Google Authentication', err, status: ERROR }
     }
 
@@ -92,7 +88,6 @@ const loginHelper = async (request) => {
                 email
             }
         })
-        console.log(user);
         if (user && user.validPassword(password)) {
             if (user.strategy === 'google') {
                 return { message: 'Google Auth failed', status: ERROR }

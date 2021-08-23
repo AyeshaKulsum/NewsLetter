@@ -26,7 +26,6 @@ exports.signup = async (request, reply) => {
 exports.googleAuth = async (request, reply) => {
     try {
         let googleAuth = await googleAuthHelper(request);
-        console.log('rs', googleAuth);
         if (googleAuth && googleAuth.status === SUCCESS) {
             sessionHelper(request, reply, googleAuth.result.id, '/', googleAuth.token);
         } else {
@@ -38,7 +37,6 @@ exports.googleAuth = async (request, reply) => {
 
     }
     catch (err) {
-        console.log(err);
         reply({ message: 'Unable to Google Authentication', err, status: ERROR }).code(INTERNAL_SERVER_ERROR_CODE)
     }
 }
