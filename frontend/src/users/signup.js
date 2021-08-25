@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Base from "../Base";
+import Base from "../base";
 
 
 const SignUp = () => {

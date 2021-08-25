@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { fetchArticlesBySourceId } from "./articles/helper/articlehelper"
-import Base from "./Base"
+import Base from "./base"
 import { fetchErrorMessage, fetchSuccessMessage } from "./redux/actions/actionCreator"
 
 

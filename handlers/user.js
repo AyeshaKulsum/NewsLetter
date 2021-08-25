@@ -58,7 +58,6 @@ const sessionHelper = async (request, reply, id, path, token) => {
 exports.login = async (request, reply) => {
     try {
         let login = await loginHelper(request);
-        console.log(login, 'login');
         if (login && login.status === SUCCESS) {
             sessionHelper(request, reply, login.result.id, '/');
         } else {

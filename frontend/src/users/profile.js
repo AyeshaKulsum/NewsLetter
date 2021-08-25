@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
-import Base from "../Base"
-import { profile } from "./helper/userhelper"
+import Base from "../base"
 import { unsubscribe } from "../articles/helper/articlehelper"
 import { fetchArticlesFromServer, profileFromServer } from "../redux/actions/actionCreator"
 import { useDispatch, useSelector } from "react-redux"

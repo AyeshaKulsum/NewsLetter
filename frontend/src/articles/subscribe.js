@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
-import Base from "../Base"
+import Base from "../base"
 import { fetchErrorMessage, fetchSourcesToSubscribeFromServer } from "../redux/actions/actionCreator"
 import { subscribe } from "./helper/articlehelper"
 

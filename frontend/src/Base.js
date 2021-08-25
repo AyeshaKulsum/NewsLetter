@@ -1,6 +1,6 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Menu from "./Menu";
+import { useSelector } from "react-redux";
+import Menu from "./menu";
 
 const Base = ({
     title = "Title",
@@ -8,8 +8,6 @@ const Base = ({
     className = "",
     children
 }) => {
-
-    const dispatch = useDispatch();
 
     const { success_message, error_message } = useSelector(state => state.messages);
     const successMessage = () => {

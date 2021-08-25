@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Base from "../Base";
+import Base from "../base";
 import { fetchArticlesFromServer } from "../redux/actions/actionCreator";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -39,7 +39,7 @@ const Home = () => {
     }
     const articles = useSelector(state => state.articles);
     return (
-        <Base title="Articles" >
+        <Base title="Articles" data-testid="home-1">
             <div>{searchForm()}</div>
             <div className="row">
                 {articles && articles.map((article, index) => {
