@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+Array [
+  <div>
+    <div>
+      <ul
+        className="nav nav-tabs bg-dark"
+      >
+        <li
+          className="nav-item"
+        >
+          <a
+            className="nav-link"
+            href="/login"
+            onClick={[Function]}
+            style={
+              Object {
+                "color": "#FFFFFF",
+              }
+            }
+          >
+            Login
+          </a>
+        </li>
+        <li
+          className="nav-item"
+        >
+          <a
+            className="nav-link"
+            href="/signup"
+            onClick={[Function]}
+            style={
+              Object {
+                "color": "#FFFFFF",
+              }
+            }
+          >
+            SignUp
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div
+      className="container-fluid"
+    >
+      <div
+        className="jumbotron   text-center"
+      >
+        <h2
+          className="display-4"
+        >
+          Articles
+        </h2>
+        <p
+          className="lead"
+        >
+          
+        </p>
+      </div>
+      <div
+        className="row"
+      >
+        <div
+          className="col-md-6 offset-sm-3 text-left"
+        >
+          <div
+            className="alert alert-success"
+            style={
+              Object {
+                "display": "none",
+              }
+            }
+          >
+            
+          </div>
+        </div>
+      </div>
+      <div
+        className="row"
+      >
+        <div
+          className="col-md-6 offset-sm-3 text-left"
+        >
+          <div
+            className="alert alert-danger"
+            style={
+              Object {
+                "display": "none",
+              }
+            }
+          >
+            
+          </div>
+        </div>
+      </div>
+      <div
+        className=""
+      >
+        <div
+          data-testid="home-1"
+        >
+          <div
+            className="container align-center"
+          >
+            <form
+              onSubmit={[Function]}
+            >
+              <div
+                className="form-group row"
+              >
+                <input
+                  className=" form-control my-2 col-8"
+                  name="query"
+                  onChange={[Function]}
+                  placeholder="URL here"
+                  type="text"
+                  value=""
+                />
+                <button
+                  className="btn btn-success offset-sm-5 align-center col-2"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div
+          className="row"
+        >
+          
+          <div>
+            Please subscribe to view latest articles
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+  <footer
+    className="footer bg-dark mt-auto"
+    style={
+      Object {
+        "bottom": "0px",
+        "position": "absolute",
+        "width": "100%",
+      }
+    }
+  >
+    <div
+      className="container-fluid bg-success text-white text-center py-3"
+    >
+      <h4>
+        If you got any questions, feel free to reach out!
+      </h4>
+      <button
+        className="btn btn-warning btn-lg"
+      >
+        Contact Us
+      </button>
+    </div>
+    <div
+      className="container text-center"
+    >
+      <span
+        className="text-muted "
+      >
+        An Amazing 
+        <span
+          className="text-white"
+        >
+          RSS
+        </span>
+         Reader
+      </span>
+    </div>
+  </footer>,
+]
+`;

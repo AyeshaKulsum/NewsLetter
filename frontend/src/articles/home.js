@@ -39,8 +39,8 @@ const Home = () => {
     }
     const articles = useSelector(state => state.articles);
     return (
-        <Base title="Articles" data-testid="home-1">
-            <div>{searchForm()}</div>
+        <Base title="Articles">
+            <div data-testid="home-1">{searchForm()}</div>
             <div className="row">
                 {articles && articles.map((article, index) => {
                     return (
