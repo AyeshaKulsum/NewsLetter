@@ -18,7 +18,7 @@
     "ejs": "^3.1.6",
     "elasticsearch": "^16.7.2",
     "fetch-cookie": "^1.0.0",
-    "hapi": "^16.1.0",
+    "@hapi/hapi": "^16.1.0",
     "hapi-auth-cookie": "^7.0.0",
     "hapi-hooks": "^2.1.0",
     "jest-dom": "^4.0.0",
